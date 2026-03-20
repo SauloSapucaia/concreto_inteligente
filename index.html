@@ -362,27 +362,44 @@
         }
 
         async function carregarDadosEGraficos() {
+            // Função para matar a bolinha e mostrar erro caso a nuvem esteja a dormir
+            const mostrarErro = (id) => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = '<div class="text-danger p-4 text-center mt-4 fw-bold">❌ O servidor está a despertar. Atualize a página num minuto.</div>';
+            };
+
+            // 1. CARREGA A TABELA
             try {
                 const resTabela = await fetch(`${API_URL}/amostra_dados`);
                 const dataTabela = await resTabela.json();
                 
-                if(dataTabela.amostra) {
+                // Só desenha se a resposta for 200 OK e tiver dados
+                if (resTabela.ok && dataTabela.amostra) {
                     window.dadosOriginais = dataTabela.amostra.map(row => {
                         if(!row.water_cement_ratio) row.water_cement_ratio = row.water / row.cement;
                         return row;
                     });
                     renderizarTabela(window.dadosOriginais);
-                } else if (dataTabela.erro) {
-                    document.getElementById('tabela-dados').innerHTML = `<tr><td colspan="11" class="text-danger fw-bold p-4">Erro na Nuvem: ${dataTabela.erro}</td></tr>`;
+                } else {
+                    document.getElementById('tabela-dados').innerHTML = `<tr><td colspan="11" class="text-danger fw-bold p-4">Erro na Nuvem: O servidor está a reiniciar. Atualize num minuto.</td></tr>`;
                 }
             } catch (err) { 
-                document.getElementById('tabela-dados').innerHTML = `<tr><td colspan="11" class="text-danger fw-bold p-4">A API está a despertar. Por favor, atualize a página em 1 minuto.</td></tr>`;
+                document.getElementById('tabela-dados').innerHTML = `<tr><td colspan="11" class="text-danger fw-bold p-4">A API está a despertar. Por favor, atualize a página num minuto.</td></tr>`;
             }
 
+            // 2. CARREGA OS GRÁFICOS
             try {
                 const response = await fetch(`${API_URL}/dados_graficos`);
                 const data = await response.json();
-                if(data.erro) { console.error(data.erro); return; }
+                
+                // BLINDAGEM: Se a API mandar erro 500, falhar ou não mandar os dados, nós matamos o spinner na hora!
+                if (!response.ok || data.erro || data.detail || !data.importancia) {
+                    console.error("API Error (Nuvem a dormir):", data);
+                    mostrarErro('grafico-importancia');
+                    mostrarErro('grafico-distribuicao');
+                    mostrarErro('grafico-correlacao');
+                    return; // Para a execução aqui para não crashar a página
+                }
 
                 const configPlotly = { 
                     displayModeBar: true, displaylogo: false, responsive: true,
@@ -390,7 +407,7 @@
                 };
                 const layoutFont = { family: 'Inter, sans-serif' };
 
-                // GRÁFICO 1: IMPORTÂNCIA (LADO A LADO - HORIZONTAL)
+                // GRÁFICO 1: IMPORTÂNCIA (O Plotly apaga o spinner sozinho quando funciona)
                 const traceImp = { 
                     x: data.importancia.valores, y: data.importancia.nomes, type: 'bar', orientation: 'h',
                     marker: { color: '#10b981' }, texttemplate: '%{x:.3f}', textposition: 'outside', cliponaxis: false,
@@ -435,7 +452,13 @@
                 };
                 Plotly.newPlot('grafico-correlacao', [traceCorr], { margin: { t: 30, l: 80, r: 20, b: 60 }, font: layoutFont, xaxis: { tickangle: -45 } }, configPlotly);
 
-            } catch (err) { console.error(err); }
+            } catch (err) { 
+                // Se a rede cair completamente, cai aqui
+                console.error("Erro fatal nos gráficos:", err);
+                mostrarErro('grafico-importancia');
+                mostrarErro('grafico-distribuicao');
+                mostrarErro('grafico-correlacao');
+            }
         }
         window.onload = carregarDadosEGraficos;
     </script>
