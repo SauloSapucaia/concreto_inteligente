@@ -37,6 +37,9 @@
         .sortable-th { cursor: pointer; user-select: none; transition: background-color 0.2s; white-space: nowrap; }
         .sortable-th:hover { background-color: #334155 !important; }
         .sort-icon { font-size: 0.75rem; opacity: 0.6; margin-left: 4px; }
+        
+        /* LOADING SPINNER */
+        .loading-box { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; color: #64748b; }
     </style>
 </head>
 <body>
@@ -105,65 +108,73 @@
             <div class="col-12">
                 <h2 class="section-title">2. A Matemática do Modelo</h2>
                 <div class="card card-custom p-4">
-                    <div class="col-md-10 mx-auto">
-                        <h4 class="fw-bold text-primary mb-4">Cálculo Numérico com XGBoost</h4>
-                        
-                        <div class="alert border-primary border-opacity-25 mb-4" style="background-color: #f0fdfa; border-left: 4px solid #0d9488;">
-                            <h6 class="fw-bold text-teal-800 mb-2" style="color: #0f766e;">🧠 A IA em Português Claro</h6>
-                            <p class="mb-0 small text-dark">Imagine que o XGBoost é um comitê com 500 engenheiros especialistas (que na fórmula são chamados de <b>Árvores</b> ou <b>$K$</b>). O 1º especialista dá um palpite inicial de resistência. O 2º olha <i>apenas</i> para o erro do primeiro e tenta corrigir. O 3º corrige o erro do segundo, e assim por diante. No final, a IA simplesmente soma a opinião de todos eles para chegar ao traço perfeito!</p>
-                        </div>
-
-                        <p>Matematicamente, em vez de usar regressões lineares simples, o sistema utiliza uma <strong>soma aditiva</strong> dessas funções. Cada árvore ($f_k$) corrige o resíduo da anterior, definida pela equação:</p>
-                        
-                        <div class="formula-box mb-3 text-center">
-                            $$ \hat{y}_i = \sum_{k=1}^K f_k(x_i) $$
-                        </div>
-
-                        <p class="small text-muted mb-2 fw-semibold">O cálculo passo a passo dessa soma na prática:</p>
-                        <div class="bg-light border rounded p-3 mb-4 font-monospace small shadow-sm">
-                            <span class="text-secondary"># 1. O modelo parte de uma resistência média (Palpite Inicial)</span><br>
-                            Valor Base = <strong>25.00 MPa</strong><br><br>
+                    <div class="row">
+                        <div class="col-md-7">
+                            <h4 class="fw-bold text-primary mb-4">Cálculo Numérico com XGBoost</h4>
                             
-                            <span class="text-secondary"># 2. As K árvores (Os Especialistas) aplicam as punições/bônus:</span><br>
-                            + Especialista 1 (Viu 400kg de cimento) &rarr; <span class="text-success fw-bold">+ 8.20 MPa</span><br>
-                            + Especialista 2 (Viu excesso de água) &rarr; <span class="text-danger fw-bold">- 4.50 MPa</span><br>
-                            + Especialista 3 (Viu boa proporção de agregados) &rarr; <span class="text-success fw-bold">+ 1.30 MPa</span><br>
-                            <span class="text-secondary">... (repetido para os 500 especialistas do modelo) ...</span><br><br>
-                    
-                            <span class="text-secondary"># 3. Resolução da Equação para a Previsão Final:</span><br>
-                            $$ \hat{y}_i = 25.00 + 8.20 - 4.50 + 1.30 = \mathbf{30.00 \text{ MPa}} $$
-                        </div>
+                            <div class="alert border-primary border-opacity-25 mb-4" style="background-color: #f0fdfa; border-left: 4px solid #0d9488;">
+                                <h6 class="fw-bold text-teal-800 mb-2" style="color: #0f766e;">🧠 A IA em Português Claro</h6>
+                                <p class="mb-0 small text-dark">Imagine que o XGBoost é um comitê com 500 engenheiros especialistas (que na fórmula são chamados de <b>Árvores</b> ou <b>$K$</b>). O 1º especialista dá um palpite inicial de resistência. O 2º olha <i>apenas</i> para o erro do primeiro e tenta corrigir. O 3º corrige o erro do segundo, e assim por diante. No final, a IA simplesmente soma a opinião de todos eles para chegar ao traço perfeito!</p>
+                            </div>
 
-                        <div class="card border-success shadow-sm mb-4">
-                            <div class="card-body">
-                                <h5 class="fw-bold text-center text-success mb-2">Peso das Variáveis no Cálculo (Importância)</h5>
-                                <p class="small text-center text-muted mb-0">Baseado nas árvores, veja quais materiais têm maior impacto no resultado final.</p>
-                                <div id="grafico-importancia" class="graph-container" style="height: 350px;"></div>
+                            <p>Matematicamente, em vez de usar regressões lineares simples, o sistema utiliza uma <strong>soma aditiva</strong> dessas funções. Cada árvore ($f_k$) corrige o resíduo da anterior, definida pela equação:</p>
+                            
+                            <div class="formula-box mb-3 text-center">
+                                $$ \hat{y}_i = \sum_{k=1}^K f_k(x_i) $$
+                            </div>
+
+                            <p class="small text-muted mb-2 fw-semibold">O cálculo passo a passo dessa soma na prática:</p>
+                            <div class="bg-light border rounded p-3 mb-4 font-monospace small shadow-sm">
+                                <span class="text-secondary"># 1. O modelo parte de uma resistência média (Palpite Inicial)</span><br>
+                                Valor Base = <strong>25.00 MPa</strong><br><br>
+                                
+                                <span class="text-secondary"># 2. As K árvores (Os Especialistas) aplicam as punições/bônus:</span><br>
+                                + Especialista 1 (Viu 400kg de cimento) &rarr; <span class="text-success fw-bold">+ 8.20 MPa</span><br>
+                                + Especialista 2 (Viu excesso de água) &rarr; <span class="text-danger fw-bold">- 4.50 MPa</span><br>
+                                + Especialista 3 (Viu boa proporção de agregados) &rarr; <span class="text-success fw-bold">+ 1.30 MPa</span><br>
+                                <span class="text-secondary">... (repetido para os 500 especialistas do modelo) ...</span><br><br>
+                        
+                                <span class="text-secondary"># 3. Resolução da Equação para a Previsão Final:</span><br>
+                                $$ \hat{y}_i = 25.00 + 8.20 - 4.50 + 1.30 = \mathbf{30.00 \text{ MPa}} $$
+                            </div>
+
+                            <p>Para evitar que o algoritmo crie "receitas impossíveis" (Overfitting), ele minimiza uma função objetivo rigorosa composta por um termo de perda e um termo de regularização $(\Omega)$:</p>
+                            
+                            <div class="formula-box mb-3 text-center">
+                                $$ \text{Obj} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \sum_{k=1}^K \Omega(f_k) $$
+                            </div>
+
+                            <div class="bg-light border rounded p-3 mb-4 small shadow-sm">
+                                <span class="fw-bold text-dark">Traduzindo a fórmula de segurança:</span>
+                                <ul class="mb-0 mt-2 text-muted">
+                                    <li class="mb-2"><strong class="text-dark">Erro Quadrático $(y_i - \hat{y}_i)^2$:</strong> É o "Detector de Desastres". Se a IA errar o cálculo por 1 MPa, a punição matemática é 1. Se errar por 10 MPa, o erro é elevado ao quadrado e a punição vira 100! Isso obriga o modelo a fugir de erros extremos.</li>
+                                    <li><strong class="text-dark">Regularização $\Omega(f_k)$:</strong> É a "Taxa de Simplicidade". Ela pune a IA se ela tentar inventar regras matemáticas muito complexas. É o que garante que a receita vai funcionar na betoneira, e não apenas no computador.</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="theory-box mt-4">
+                                <h5 class="fw-bold">⚠️ Fatores Físicos e Limitações de Campo</h5>
+                                <p class="mb-0 text-sm">Este cálculo foca na proporção da massa ($kg/m^3$). Em campo, patologias podem surgir devido a fatores externos, tais como:</p>
+                                <ul class="mb-0 mt-2 small">
+                                    <li><b>Temperatura:</b> Uso de gelo/nitrogênio para dissipar calor em grandes volumes.</li>
+                                    <li><b>Água Ácida:</b> Águas de córregos geram ataque de sulfatos.</li>
+                                    <li><b>Módulo de Finura:</b> O tipo geológico da areia altera a necessidade de água.</li>
+                                </ul>
                             </div>
                         </div>
 
-                        <p>Para evitar que o algoritmo crie "receitas impossíveis" (Overfitting), ele minimiza uma função objetivo rigorosa composta por um termo de perda e um termo de regularização $(\Omega)$:</p>
-                        
-                        <div class="formula-box mb-3 text-center">
-                            $$ \text{Obj} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \sum_{k=1}^K \Omega(f_k) $$
-                        </div>
-
-                        <div class="bg-light border rounded p-3 mb-4 small shadow-sm">
-                            <span class="fw-bold text-dark">Traduzindo a fórmula de segurança:</span>
-                            <ul class="mb-0 mt-2 text-muted">
-                                <li class="mb-2"><strong class="text-dark">Erro Quadrático $(y_i - \hat{y}_i)^2$:</strong> É o "Detector de Desastres". Se a IA errar o cálculo por 1 MPa, a punição matemática é 1. Se errar por 10 MPa, o erro é elevado ao quadrado e a punição vira 100! Isso obriga o modelo a fugir de erros extremos.</li>
-                                <li><strong class="text-dark">Regularização $\Omega(f_k)$:</strong> É a "Taxa de Simplicidade". Ela pune a IA se ela tentar inventar regras matemáticas muito complexas. É o que garante que a receita vai funcionar na betoneira, e não apenas no computador.</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="theory-box mt-4">
-                            <h5 class="fw-bold">⚠️ Fatores Físicos e Limitações de Campo</h5>
-                            <p class="mb-0 text-sm">Este cálculo foca na proporção da massa ($kg/m^3$). Em campo, patologias podem surgir devido a fatores externos, tais como:</p>
-                            <ul class="mb-0 mt-2 small">
-                                <li><b>Temperatura:</b> Uso de gelo/nitrogênio para dissipar calor em grandes volumes.</li>
-                                <li><b>Água Ácida:</b> Águas de córregos geram ataque de sulfatos.</li>
-                                <li><b>Módulo de Finura:</b> O tipo geológico da areia altera a necessidade de água.</li>
-                            </ul>
+                        <div class="col-md-5">
+                            <div class="h-100 d-flex flex-column pt-4 pt-md-0">
+                                <h5 class="fw-bold text-center text-success mb-2">Peso das Variáveis no Cálculo</h5>
+                                <p class="small text-center text-muted mb-4">Baseado nas árvores, veja quais materiais têm maior impacto no resultado final.</p>
+                                
+                                <div id="grafico-importancia" class="graph-container flex-grow-1" style="min-height: 600px;">
+                                    <div class="loading-box">
+                                        <div class="spinner-border text-success mb-3" role="status"></div>
+                                        <span class="small fw-semibold">A carregar IA do Servidor...</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -208,7 +219,12 @@
                                 </tr>
                             </thead>
                             <tbody id="tabela-dados">
-                                <tr><td colspan="11" class="p-4 text-muted">A carregar os dados brutos da API...</td></tr>
+                                <tr>
+                                    <td colspan="11" class="p-5 text-muted">
+                                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                                        A sincronizar dados da API com o laboratório na nuvem...
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -218,7 +234,12 @@
             <div class="col-md-6 mb-4">
                 <div class="card card-custom p-4 h-100">
                     <h5 class="fw-bold text-center">Distribuição e Curva de Gauss</h5>
-                    <div id="grafico-distribuicao" class="graph-container"></div>
+                    <div id="grafico-distribuicao" class="graph-container">
+                        <div class="loading-box">
+                            <div class="spinner-border text-primary mb-3" role="status"></div>
+                            <span class="small fw-semibold">A calcular estatísticas...</span>
+                        </div>
+                    </div>
                     <p class="text-muted small text-center mt-3 mb-0">O histograma revela a concentração de testes em cada faixa de resistência. A curva ilustra a distribuição normal (Sino de Gauss) esperada dos dados.</p>
                 </div>
             </div>
@@ -226,7 +247,12 @@
             <div class="col-md-6 mb-4">
                 <div class="card card-custom p-4 h-100">
                     <h5 class="fw-bold text-center">Matriz de Correlação Linear</h5>
-                    <div id="grafico-correlacao" class="graph-container"></div>
+                    <div id="grafico-correlacao" class="graph-container">
+                        <div class="loading-box">
+                            <div class="spinner-border text-danger mb-3" role="status"></div>
+                            <span class="small fw-semibold">A cruzar variáveis químicas...</span>
+                        </div>
+                    </div>
                     <p class="text-muted small text-center mt-3 mb-0">Comprova as interações químicas: tons vermelhos indicam crescimento proporcional. Tons azuis indicam relação inversa (ex: Água x Resistência).</p>
                 </div>
             </div>
@@ -240,8 +266,14 @@
         window.colunaAtual = '';
         window.ordemCrescente = true;
 
+        // BOTÃO DO SIMULADOR (COM ANIMAÇÃO)
         document.getElementById('formSimulador').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const btn = document.querySelector('.btn-simular');
+            const textoOriginal = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> Calculando...';
+            btn.disabled = true;
+
             const payload = {
                 cement: parseFloat(document.getElementById('cem').value), slag: parseFloat(document.getElementById('sla').value),
                 fly_ash: parseFloat(document.getElementById('fly').value), water: parseFloat(document.getElementById('wat').value),
@@ -256,14 +288,26 @@
                     document.getElementById('resCusto').innerText = `R$ ${data.resultados.custo_estimado_reais_por_m3}`;
                     document.getElementById('resultadoSimulador').classList.remove('d-none');
                 } else { alert("Atenção: " + JSON.stringify(data.detail)); }
-            } catch (error) { alert("Erro de conexão com o servidor. A API Python está rodando?"); }
+            } catch (error) { alert("Erro de conexão com o servidor. A API Python está a rodar?"); }
+            
+            btn.innerHTML = textoOriginal;
+            btn.disabled = false;
         });
 
+        // BOTÃO DO OTIMIZADOR (COM ANIMAÇÃO)
         document.getElementById('formOtimizador').addEventListener('submit', async (e) => {
             e.preventDefault();
             const alvo = document.getElementById('alvoMpa').value;
             document.getElementById('resultadoOtimizador').classList.remove('d-none');
-            document.getElementById('optMpa').innerText = "Calculando as equações de custo...";
+            
+            const btn = document.querySelector('.btn-otimizar');
+            const textoOriginal = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> Procurando receitas...';
+            btn.disabled = true;
+
+            document.getElementById('optMpa').innerText = "A calcular simulações de Monte Carlo...";
+            document.getElementById('optCusto').innerText = "";
+            document.getElementById('optReceita').innerHTML = "";
             
             try {
                 const response = await fetch(`${API_URL}/otimizar_custo?resistencia_alvo_mpa=${alvo}&num_opcoes=1`);
@@ -276,9 +320,12 @@
                         `<li>Cimento: ${best.cement} kg</li><li>Água: ${best.water} kg</li><li>Brita: ${best.coarse_agg} kg</li><li>Areia: ${best.fine_agg} kg</li><li>Fator A/C: ${(best.water/best.cement).toFixed(2)}</li>`;
                 } else {
                     document.getElementById('resultadoOtimizador').classList.add('d-none');
-                    alert("Não foi possível encontrar um traço seguro.");
+                    alert("Não foi possível encontrar um traço seguro para essa meta.");
                 }
-            } catch (error) { alert("Erro de conexão com o servidor. A API Python está rodando?"); }
+            } catch (error) { alert("Erro de conexão com o servidor."); }
+            
+            btn.innerHTML = textoOriginal;
+            btn.disabled = false;
         });
 
         function renderizarTabela(dados) {
@@ -326,10 +373,10 @@
                     });
                     renderizarTabela(window.dadosOriginais);
                 } else if (dataTabela.erro) {
-                    document.getElementById('tabela-dados').innerHTML = `<tr><td colspan="11" class="text-danger fw-bold p-4">Erro no Python: ${dataTabela.erro}</td></tr>`;
+                    document.getElementById('tabela-dados').innerHTML = `<tr><td colspan="11" class="text-danger fw-bold p-4">Erro na Nuvem: ${dataTabela.erro}</td></tr>`;
                 }
             } catch (err) { 
-                document.getElementById('tabela-dados').innerHTML = `<tr><td colspan="11" class="text-danger fw-bold p-4">Erro de conexão: A API Python foi reiniciada?</td></tr>`;
+                document.getElementById('tabela-dados').innerHTML = `<tr><td colspan="11" class="text-danger fw-bold p-4">A API está a despertar. Por favor, atualize a página em 1 minuto.</td></tr>`;
             }
 
             try {
@@ -343,15 +390,16 @@
                 };
                 const layoutFont = { family: 'Inter, sans-serif' };
 
-                // GRÁFICO 1: IMPORTÂNCIA 
+                // GRÁFICO 1: IMPORTÂNCIA (LADO A LADO - HORIZONTAL)
                 const traceImp = { 
-                    x: data.importancia.nomes, y: data.importancia.valores, type: 'bar', 
-                    marker: { color: '#10b981' }, texttemplate: '%{y:.3f}', textposition: 'outside', cliponaxis: false,
-                    hovertemplate: '<b>%{x}</b><br>Peso: %{y:.3f}<extra></extra>' 
+                    x: data.importancia.valores, y: data.importancia.nomes, type: 'bar', orientation: 'h',
+                    marker: { color: '#10b981' }, texttemplate: '%{x:.3f}', textposition: 'outside', cliponaxis: false,
+                    hovertemplate: '<b>%{y}</b><br>Peso: %{x:.3f}<extra></extra>' 
                 };
                 Plotly.newPlot('grafico-importancia', [traceImp], { 
-                    margin: { t: 20, l: 40, r: 20, b: 40 }, yaxis: { title: 'Importância', range: [0, Math.max(...data.importancia.valores) * 1.2] },
-                    xaxis: { tickangle: 0 }, font: layoutFont, bargap: 0.2
+                    margin: { t: 20, l: 80, r: 40, b: 40 }, yaxis: { autorange: 'reversed' },
+                    xaxis: { title: 'Importância', range: [0, Math.max(...data.importancia.valores) * 1.3] },
+                    font: layoutFont, bargap: 0.15
                 }, configPlotly);
 
                 // GRÁFICO 2: GAUSS
