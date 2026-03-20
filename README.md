@@ -8,7 +8,7 @@
 
 ## 🌐 Acesso Online
 O dashboard interativo e a API estão hospedados em nuvem e podem ser acessados diretamente pelo navegador:
-👉 **[Clique aqui para acessar o Simulador ao vivo] (LINK_DO_SEU_SITE_AQUI)**
+👉 **[Clique aqui para acessar o Simulador ao vivo](https://saulosapucaia.github.io/concreto_inteligente/)**
 
 ---
 
@@ -19,7 +19,7 @@ O sistema conta com uma API robusta e um Dashboard interativo capaz de:
 1. **Laboratório Virtual:** Prever a resistência (MPa) e o custo de uma mistura específica em milissegundos.
 2. **Otimizador Financeiro:** Encontrar a combinação de materiais mais barata possível que atenda aos requisitos de segurança estrutural de uma obra.
 
-<img width="1320" height="679" alt="image" src="https://github.com/user-attachments/assets/cdff4cb9-f1d1-4190-98cd-9e781e348286" />
+<img width="1320" height="679" alt="Preview do Dashboard" src="https://github.com/user-attachments/assets/cdff4cb9-f1d1-4190-98cd-9e781e348286" />
 
 ## ⚙️ Tecnologias Utilizadas
 * **Ciência de Dados:** Pandas, NumPy, Scikit-Learn
@@ -28,11 +28,18 @@ O sistema conta com uma API robusta e um Dashboard interativo capaz de:
 * **Back-end / API:** FastAPI, Uvicorn, Pydantic
 * **Front-end / DataViz:** HTML5, Bootstrap 5, Plotly.js, MathJax
 
-📊 Estrutura de Dados
-O modelo foi calibrado com Data Augmentation, unindo a clássica base da UCI Machine Learning Repository com ensaios contemporâneos de misturas sustentáveis, mapeando 8 variáveis físicas (Cimento, Água, Agregados, Aditivos, etc.).
+## 🧠 Por que XGBoost? (Modelagem e Desempenho)
+O modelo foi calibrado com dados baseados na clássica *UCI Machine Learning Repository*, unida a ensaios contemporâneos de misturas sustentáveis (totalizando 804 amostras para treino e 201 para teste).
 
-Métrica de Validação (R²): 0.939
+Durante a fase de testes, a **Regressão Linear Múltipla** sofreu de *underfitting* severo, pois não conseguiu mapear a não-linearidade da cura do concreto e as interações químicas complexas entre os agregados e aditivos. O **XGBoost** provou ser o campeão absoluto da pipeline:
 
-Erro Absoluto Médio (MAE): 2.67 MPa
+| Modelo Analisado | R² (Validação) | MAE (Erro Médio) | RMSE |
+| :--- | :---: | :---: | :---: |
+| 🔴 Baseline (Reg. Linear) | 0.5848 | 8.82 MPa | 11.12 MPa |
+| 🟡 Random Forest | 0.9220 | 3.33 MPa | 4.82 MPa |
+| 🟢 **XGBoost Otimizado** | **0.9399** | **2.67 MPa** | **4.23 MPa** |
 
-Desenvolvido por: Saulo Guimarães Sapucaia - Data Analyst
+*⚙️ **Validação Cruzada:** O modelo final foi ajustado via `RandomizedSearchCV` e submetido a um K-Fold (k=5), atingindo uma média de R² de **0.9397 (+/- 0.0128)**, o que atesta sua estabilidade e altíssima capacidade de generalização sem overfitting.*
+
+---
+**Desenvolvido por:** Saulo Guimarães Sapucaia - *Data Analyst*
