@@ -28,7 +28,7 @@ app.add_middleware(
 )
 
 # Caminho absoluto para evitar problemas de localização do ficheiro
-CAMINHO_MODELO = r"C:\Users\saulo\Downloads\estudo_exploratorio\modelo_concreto.pkl"
+# CAMINHO_MODELO = r"C:\Users\saulo\Downloads\estudo_exploratorio\modelo_concreto.pkl"
 
 # 2. Carregamento do Modelo Treinado
 try:
