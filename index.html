@@ -53,12 +53,50 @@
 
     <div class="container">
         
+        /* GLOSSÁRIO INTERATIVO PARA CONHECIMENTO GERAL */
+        <div class="row mb-5 mt-n3">
+            <div class="col-12">
+                <div class="accordion shadow-sm" id="accordionGlossario">
+                    <div class="accordion-item border-0 rounded-3 overflow-hidden">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="background-color: #f8fafc; color: #334155; border-left: 4px solid #3b82f6;">
+                                🤔 Não é da área de Engenharia? Clique aqui para o Dicionário Básico do Concreto
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionGlossario">
+                            <div class="accordion-body bg-white text-muted small border border-top-0 border-light rounded-bottom">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <strong class="text-dark">💪 MPa (Megapascal):</strong> É a medida da força. Um concreto de 30 MPa aguenta o peso de cerca de 300 kg em cada centímetro quadrado antes de quebrar. Casas comuns usam ~20 MPa, enquanto arranha-céus passam dos 40 MPa.
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong class="text-dark">♻️ Escória e Cinza:</strong> São pós que sobram de indústrias (siderúrgicas e termelétricas). A engenharia moderna usa-os para substituir parte do cimento. Isso deixa o concreto mais barato e muito mais ecológico.
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong class="text-dark">🧪 Aditivo (Superplastificante):</strong> É um produto químico mágico. Ele deixa o concreto "mole" e fácil de espalhar na obra sem precisarmos adicionar água (já que água a mais estraga a receita).
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <strong class="text-dark">⚖️ Fator A/C (Água/Cimento):</strong> É a regra de ouro da construção. Se colocar muita água, o cimento fica diluído e seca cheio de micro-buracos (ficando fraco). Quanto menor este fator, mais forte é o concreto.
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <strong class="text-dark">⏳ Idade (Dias):</strong> O concreto não "seca", ele endurece através de uma reação química com a água que leva dias. O padrão mundial de segurança é testar a força final da estrutura exatamente no seu 28º dia.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        /* SEÇÃO 1: SIMULADOR E OTIMIZADOR */
         <div class="row mb-5">
             <div class="col-12 text-center mb-4">
                 <h2 class="section-title">1. Laboratório Virtual e Otimizador</h2>
                 <p class="text-muted">Teste as predições do modelo matemático e a Otimização Multi-objetivo na prática.</p>
             </div>
             
+            /* SIMULADOR DE TRAÇO */
             <div class="col-md-6 mb-4">
                 <div class="card card-custom p-4 h-100 border-top border-4 border-primary">
                     <h4 class="mb-3 fw-bold text-primary">🔍 Simulador de Traço</h4>
@@ -82,7 +120,8 @@
                     </div>
                 </div>
             </div>
-
+            
+            /* OTIMIZADOR DE TRAÇO */
             <div class="col-md-6 mb-4">
                 <div class="card card-custom p-4 h-100 border-top border-4 border-success">
                     <h4 class="mb-3 fw-bold text-success">💰 Otimizador Financeiro</h4>
@@ -104,14 +143,17 @@
             </div>
         </div>
 
+        /* SEÇÃO 2: EXPLICAÇÃO MATEMÁTICA DO MODELO */
         <div class="row mb-5">
             <div class="col-12">
                 <h2 class="section-title">2. A Matemática do Modelo</h2>
+                /* EXPLICAÇÃO DO XGBOOST COM HISTÓRIA E FÓRMULAS */
                 <div class="card card-custom p-4">
                     <div class="row">
                         <div class="col-md-7">
+
+                            /* EXPLICAÇÃO SIMPLIFICADA DO MODELO DE MACHINE LEARNING */
                             <h4 class="fw-bold text-primary mb-4">Cálculo Numérico com XGBoost</h4>
-                            
                             <div class="alert border-primary border-opacity-25 mb-4" style="background-color: #f0fdfa; border-left: 4px solid #0d9488;">
                                 <h6 class="fw-bold text-teal-800 mb-2" style="color: #0f766e;">🧠 A IA em Português Claro</h6>
                                 <p class="mb-0 small text-dark">Imagine que o XGBoost é um comitê com 500 engenheiros especialistas (que na fórmula são chamados de <b>Árvores</b> ou <b>$K$</b>). O 1º especialista dá um palpite inicial de resistência. O 2º olha <i>apenas</i> para o erro do primeiro e tenta corrigir. O 3º corrige o erro do segundo, e assim por diante. No final, a IA simplesmente soma a opinião de todos eles para chegar ao traço perfeito!</p>
@@ -119,10 +161,12 @@
 
                             <p>Matematicamente, em vez de usar regressões lineares simples, o sistema utiliza uma <strong>soma aditiva</strong> dessas funções. Cada árvore ($f_k$) corrige o resíduo da anterior, definida pela equação:</p>
                             
+                            /* FÓRMULA DA PREVISÃO DO XGBOOST */
                             <div class="formula-box mb-3 text-center">
                                 $$ \hat{y}_i = \sum_{k=1}^K f_k(x_i) $$
                             </div>
 
+                            /* EXPLICAÇÃO SIMPLIFICADA DO PROCESSO DE PREVISÃO */
                             <p class="small text-muted mb-2 fw-semibold">O cálculo passo a passo dessa soma na prática:</p>
                             <div class="bg-light border rounded p-3 mb-4 font-monospace small shadow-sm">
                                 <span class="text-secondary"># 1. O modelo parte de uma resistência média (Palpite Inicial)</span><br>
@@ -140,10 +184,12 @@
 
                             <p>Para evitar que o algoritmo crie "receitas impossíveis" (Overfitting), ele minimiza uma função objetivo rigorosa composta por um termo de perda e um termo de regularização $(\Omega)$:</p>
                             
+                            /* FÓRMULA DA FUNÇÃO OBJETIVO DO XGBOOST */
                             <div class="formula-box mb-3 text-center">
                                 $$ \text{Obj} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 + \sum_{k=1}^K \Omega(f_k) $$
                             </div>
 
+                            /* EXPLICAÇÃO SIMPLIFICADA DA FUNÇÃO OBJETIVO */
                             <div class="bg-light border rounded p-3 mb-4 small shadow-sm">
                                 <span class="fw-bold text-dark">Traduzindo a fórmula de segurança:</span>
                                 <ul class="mb-0 mt-2 text-muted">
@@ -152,6 +198,7 @@
                                 </ul>
                             </div>
                             
+                            /* FATORES EXTERNOS E LIMITAÇÕES DO MODELO */
                             <div class="theory-box mt-4">
                                 <h5 class="fw-bold">⚠️ Fatores Físicos e Limitações de Campo</h5>
                                 <p class="mb-0 text-sm">Este cálculo foca na proporção da massa ($kg/m^3$). Em campo, patologias podem surgir devido a fatores externos, tais como:</p>
@@ -161,13 +208,69 @@
                                     <li><b>Módulo de Finura:</b> O tipo geológico da areia altera a necessidade de água.</li>
                                 </ul>
                             </div>
+
+                            /* RESULTADOS DO MODELO E IMPORTÂNCIA DAS VARIÁVEIS */
+                            <div class="accordion mt-4 shadow-sm" id="accordionGeek">
+                                <div class="accordion-item border-0 rounded-3 overflow-hidden">
+                                    <h2 class="accordion-header" id="headingGeek">
+                                        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGeek" aria-expanded="false" aria-controls="collapseGeek" style="background-color: #f1f5f9; color: #0f172a; border-left: 4px solid #475569;">
+                                            Modo Cientista de Dados: Métricas de Avaliação e Pipeline
+                                        </button>
+                                    </h2>
+                                    <div id="collapseGeek" class="accordion-collapse collapse" aria-labelledby="headingGeek" data-bs-parent="#accordionGeek">
+                                        <div class="accordion-body bg-white text-muted small border border-top-0 border-light rounded-bottom">
+                                            <p class="mb-3">Durante o desenvolvimento do modelo em Python, o dataset foi dividido em <strong>804 amostras para treino e 201 para teste</strong>. A regressão linear sofreu de <i>underfitting</i> severo devido à não-linearidade química da cura do concreto. O XGBoost provou ser o campeão absoluto na nossa bateria de testes:</p>
+                                            
+                                            /* COMPARAÇÃO DE MODELOS E MÉTRICAS DE AVALIAÇÃO */
+                                            <div class="row g-2 mb-3">
+                                                <div class="col-md-4">
+                                                    <div class="p-2 border rounded bg-light text-center h-100">
+                                                        <span class="d-block fw-bold text-secondary mb-1">Baseline (Reg. Linear)</span>
+                                                        <div class="text-dark fw-semibold">R²: 0.5848</div>
+                                                        <div class="text-danger">MAE: 8.82 MPa</div>
+                                                        <div class="text-muted" style="font-size: 0.70rem;">RMSE: 11.12 MPa</div>
+                                                    </div>
+                                                </div>
+                                                /* O MODELO DE ÁRVORE DE DECISÃO (RANDOM FOREST) FOI BOM, MAS NÃO CONSEGUIU CAPTURAR TODAS AS COMPLEXIDADES QUÍMICAS, RESULTANDO EM ERROS MAIORES. */
+                                                <div class="col-md-4">
+                                                    <div class="p-2 border rounded bg-light text-center h-100">
+                                                        <span class="d-block fw-bold text-secondary mb-1">Random Forest</span>
+                                                        <div class="text-dark fw-semibold">R²: 0.9220</div>
+                                                        <div class="text-warning text-dark">MAE: 3.33 MPa</div>
+                                                        <div class="text-muted" style="font-size: 0.70rem;">RMSE: 4.82 MPa</div>
+                                                    </div>
+                                                </div>
+                                                /* O XGBOOST, COM SEU MÉTODO DE APRENDIZADO ADITIVO E REGULARIZAÇÃO, CONSEGUIU CAPTURAR AS INTERAÇÕES QUÍMICAS COMPLEXAS ENTRE OS MATERIAIS, RESULTANDO EM PREVISÕES MUITO MAIS PRECISAS. */
+                                                <div class="col-md-4">
+                                                    <div class="p-2 border border-success border-2 rounded bg-success bg-opacity-10 text-center h-100 shadow-sm">
+                                                        <span class="d-block fw-bold text-success mb-1">🏆 XGBoost Otimizado</span>
+                                                        <div class="fw-bold text-dark">R²: 0.9399</div>
+                                                        <div class="fw-bold text-success">MAE: 2.67 MPa</div>
+                                                        <div class="text-muted" style="font-size: 0.70rem;">RMSE: 4.23 MPa</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            /* O modelo XGBoost, com seus 500 especialistas (árvores) e a capacidade de corrigir erros iterativamente, conseguiu capturar as complexas interações químicas entre os materiais do concreto. Isso resultou em uma precisão significativamente maior, como evidenciado pelo R² de 0.9399, que indica que o modelo explica quase 94% da variabilidade dos dados de resistência. O MAE de 2.67 MPa e o RMSE de 4.23 MPa mostram que as previsões estão muito próximas dos valores reais, tornando o XGBoost a escolha ideal para este problema. */
+                                            <div class="bg-light p-3 rounded border border-light">
+                                                <span class="fw-bold text-dark d-block mb-2">⚙️ Tuning e Validação do Modelo Vencedor:</span>
+                                                <ul class="mb-0 ps-3">
+                                                    <li class="mb-1"><strong>Hiperparâmetros (RandomizedSearch):</strong> <code>{'subsample': 0.8, 'n_estimators': 500, 'max_depth': 3, 'learning_rate': 0.2, 'colsample_bytree': 0.8}</code></li>
+                                                    <li><strong>Validação Cruzada (K-Fold = 5):</strong> Média de R² no K-Fold: <strong>0.9397 (+/- 0.0128)</strong>. O desvio padrão minúsculo comprova que o modelo não memorizou os dados (sem <i>overfitting</i>) e consegue generalizar com excelência para traços inéditos.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
+                        /* IMPORTÂNCIA DAS VARIÁVEIS NO MODELO */
                         <div class="col-md-5">
                             <div class="h-100 d-flex flex-column pt-4 pt-md-0">
                                 <h5 class="fw-bold text-center text-success mb-2">Peso das Variáveis no Cálculo</h5>
                                 <p class="small text-center text-muted mb-4">Baseado nas árvores, veja quais materiais têm maior impacto no resultado final.</p>
                                 
+                                /* O gráfico de importância das variáveis é uma representação visual que mostra quais características (variáveis) tiveram mais influência na previsão do modelo. Ele é gerado a partir do modelo treinado e pode ser interpretado para entender melhor o comportamento do modelo e a relevância de cada variável no processo de tomada de decisão. */
                                 <div id="grafico-importancia" class="graph-container flex-grow-1" style="min-height: 600px;">
                                     <div class="loading-box">
                                         <div class="spinner-border text-success mb-3" role="status"></div>
@@ -181,10 +284,11 @@
             </div>
         </div>
 
+        /* SEÇÃO 3: O DATASET E ANÁLISE ESTATÍSTICA */
         <div class="row mb-5">
             <div class="col-12">
                 <h2 class="section-title">3. O Dataset e Análise Estatística</h2>
-                
+                /* EXPLICAÇÃO DA ORIGEM DOS DADOS E IMPORTÂNCIA DE UM BANCO DE DADOS REALISTA PARA O TREINO DO MODELO */
                 <div class="card bg-white border-0 shadow-sm mb-4" style="border-left: 4px solid #8b5cf6 !important;">
                     <div class="card-body">
                         <h5 class="fw-bold mb-2" style="color: #4c1d95;">📚 A Origem dos Dados (Ensaios de Laboratório)</h5>
@@ -193,6 +297,7 @@
                 </div>
             </div>
             
+            /* TABELA ORDENÁVEL COM AS 10 PRIMEIRAS LINHAS DO DATASET */
             <div class="col-12 mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <p class="text-muted m-0">Abaixo, uma amostra das 10 primeiras linhas do nosso banco de dados unificado de laboratório. <b>Clique nos títulos para ordenar.</b></p>
@@ -200,6 +305,8 @@
                         📥 Baixar CSV Completo
                     </a>
                 </div>
+                
+                /* A tabela é construída dinamicamente usando JavaScript para exibir os dados do dataset. Cada coluna é clicável para permitir a ordenação dos dados com base nessa coluna específica. A função `ordenarTabela` é responsável por ordenar os dados e atualizar a exibição da tabela. */
                 <div class="card card-custom p-0 overflow-hidden">
                     <div class="table-responsive">
                         <table class="table table-hover table-custom text-center m-0">
@@ -231,6 +338,7 @@
                 </div>
             </div>
 
+            /* GRÁFICOS DE DISTRIBUIÇÃO E CORRELAÇÃO */
             <div class="col-md-6 mb-4">
                 <div class="card card-custom p-4 h-100">
                     <h5 class="fw-bold text-center">Distribuição e Curva de Gauss</h5>
@@ -244,6 +352,7 @@
                 </div>
             </div>
             
+            /* A MATRIZ DE CORRELAÇÃO NO IMPACTO DA RESISTÊNCIA DO CONCRETO */
             <div class="col-md-6 mb-4">
                 <div class="card card-custom p-4 h-100">
                     <h5 class="fw-bold text-center">Matriz de Correlação Linear</h5>
@@ -259,6 +368,7 @@
         </div>
     </div>
 
+    /* SCRIPTS PARA INTERATIVIDADE, CHAMADAS À API E RENDERIZAÇÃO DE GRÁFICOS */
     <script>
         const API_URL = "https://api-concreto.onrender.com";
         
@@ -328,6 +438,7 @@
             btn.disabled = false;
         });
 
+        /* FUNÇÃO PARA RENDERIZAR A TABELA COM OS DADOS VINDOS DA API, INCLUINDO A LÓGICA DE ORDENAÇÃO QUANDO O USUÁRIO CLICAR NOS TÍTULOS DAS COLUNAS. */
         function renderizarTabela(dados) {
             let html = '';
             dados.forEach(row => {
@@ -342,6 +453,7 @@
             document.getElementById('tabela-dados').innerHTML = html;
         }
 
+        /* FUNÇÃO PARA ORDENAR A TABELA */
         window.ordenarTabela = function(coluna) {
             if(window.colunaAtual === coluna) {
                 window.ordemCrescente = !window.ordemCrescente; 
@@ -361,6 +473,7 @@
             renderizarTabela(window.dadosOriginais);
         }
 
+        /* FUNÇÃO PRINCIPAL PARA CARREGAR OS DADOS DA TABELA E OS GRÁFICOS DE IMPORTÂNCIA, DISTRIBUIÇÃO E CORRELAÇÃO. */
         async function carregarDadosEGraficos() {
             // Função para matar a bolinha e mostrar erro caso a nuvem esteja a dormir
             const mostrarErro = (id) => {
@@ -401,15 +514,19 @@
                     return; // Para a execução aqui para não crashar a página
                 }
 
+                document.getElementById('grafico-importancia').innerHTML = '';
+                document.getElementById('grafico-distribuicao').innerHTML = '';
+                document.getElementById('grafico-correlacao').innerHTML = '';
+
                 const configPlotly = { 
                     displayModeBar: true, displaylogo: false, responsive: true,
                     modeBarButtonsToRemove: ['pan2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'resetScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'toggleSpikelines']
                 };
                 const layoutFont = { family: 'Inter, sans-serif' };
 
-                // GRÁFICO 1: IMPORTÂNCIA (O Plotly apaga o spinner sozinho quando funciona)
+                // GRÁFICO 1: IMPORTÂNCIA 
                 const traceImp = { 
-                    x: data.importancia.valores, y: data.importancia.nomes, type: 'bar', orientation: 'h',
+                    x: data.importancia.valores, y: data.importancia.nomes, type: 'bar',
                     marker: { color: '#10b981' }, texttemplate: '%{x:.3f}', textposition: 'outside', cliponaxis: false,
                     hovertemplate: '<b>%{y}</b><br>Peso: %{x:.3f}<extra></extra>' 
                 };
