@@ -111,7 +111,8 @@
                         <button type="submit" class="btn btn-simular w-100 mt-4 py-2">Calcular Resistência Estimada</button>
                     </form>
                     <div id="resultadoSimulador" class="result-box d-none mt-4 p-3 bg-light rounded">
-                        <div class="d-flex justify-content-around text-center">
+                        <div class="d-flex justify-content-around text-center align-items-center">
+                            <div><span class="d-block small text-muted text-uppercase fw-semibold">Fator A/C</span><span class="fs-4 fw-bold text-primary" id="resAC">--</span></div>
                             <div><span class="d-block small text-muted text-uppercase fw-semibold">Resistência</span><span class="fs-3 fw-bold text-dark" id="resMpa">-- MPa</span></div>
                             <div><span class="d-block small text-muted text-uppercase fw-semibold">Custo</span><span class="fs-4 fw-bold text-success" id="resCusto">R$ --</span></div>
                         </div>
@@ -381,8 +382,11 @@
                 const response = await fetch(`${API_URL}/simular_traco`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 const data = await response.json();
                 if(response.ok) {
+                    // Calcula o Fator A/C na hora
+                    const fatorAC = (payload.water / payload.cement).toFixed(2);                    
+                    document.getElementById('resAC').innerText = fatorAC;
                     document.getElementById('resMpa').innerText = `${data.resultados.resistencia_esperada_mpa} MPa`;
-                    document.getElementById('resCusto').innerText = `R$ ${data.resultados.custo_estimado_reais_por_m3}`;
+                    document.getElementById('resCusto').innerText = `R$ ${parseFloat(data.resultados.custo_estimado_reais_por_m3).toFixed(2)} / m³`;
                     document.getElementById('resultadoSimulador').classList.remove('d-none');
                 } else { alert("Atenção: " + JSON.stringify(data.detail)); }
             } catch (error) { alert("Erro de conexão com o servidor. A API Python está a rodar?"); }
@@ -414,7 +418,14 @@
                     document.getElementById('optCusto').innerText = `R$ ${best.custo_reais.toFixed(2)} / m³`;
                     document.getElementById('optMpa').innerText = `Segurança Alcançada: ${best.resistencia_estimada_mpa.toFixed(2)} MPa`;
                     document.getElementById('optReceita').innerHTML = 
-                        `<li>Cimento: ${best.cement} kg</li><li>Água: ${best.water} kg</li><li>Brita: ${best.coarse_agg} kg</li><li>Areia: ${best.fine_agg} kg</li><li>Fator A/C: ${(best.water/best.cement).toFixed(2)}</li>`;
+                        `<li>Cimento: ${best.cement} kg</li>
+                         <li>Água: ${best.water} kg</li>
+                         <li>Brita: ${best.coarse_agg} kg</li>
+                         <li>Areia: ${best.fine_agg} kg</li>
+                         <li>Escória: ${best.slag} kg</li>
+                         <li>Cinza Volante: ${best.fly_ash} kg</li>
+                         <li>Aditivo: ${best.superplasticizer} kg</li>
+                         <li class="mt-2 text-primary">Fator A/C: ${(best.water/best.cement).toFixed(2)}</li>`;
                 } else {
                     document.getElementById('resultadoOtimizador').classList.add('d-none');
                     alert("Não foi possível encontrar um traço seguro para essa meta.");
