@@ -8,15 +8,15 @@ import joblib
 import pandas as pd
 import numpy as np
 
-#%%
-# A MÁGICA DA NUVEM: O Python acha a própria pasta sozinho
+# A MÁGICA PARA A NUVEM: O Python descobre sozinho a pasta onde ele está guardado!
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CAMINHO_MODELO = os.path.join(BASE_DIR, "modelo_concreto.pkl")
 CAMINHO_CSV = os.path.join(BASE_DIR, "Estudo_exploratorio.csv")
 
+# 1. Inicialização da API
 app = FastAPI(
     title="API Concreto Inteligente 🚀",
-    description="Simulador e Otimizador de Traços",
+    description="Simulador e Otimizador de Traços de Betão/Concreto baseados em Machine Learning (XGBoost).",
     version="1.0.0"
 )
 
@@ -27,46 +27,60 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-#%%
-# Carrega o Modelo
+
+# 2. Carregamento do Modelo Treinado
 try:
     modelo = joblib.load(CAMINHO_MODELO)
-    print("✅ Modelo carregado com sucesso!")
+    print(f"✅ Modelo XGBoost carregado com sucesso!")
 except Exception as e:
     modelo = None
     print(f"❌ Erro ao carregar modelo: {e}")
-#%%
-CUSTOS_KG = {
-    "cement": 0.50, "slag": 0.20, "fly_ash": 0.15, "water": 0.01,
-    "superplasticizer": 3.00, "coarse_agg": 0.05, "fine_agg": 0.05
-}
-#%%
-class MixConcreto(BaseModel):
-    cement: float = Field(default=350.0)
-    slag: float = Field(default=0.0)
-    fly_ash: float = Field(default=0.0)
-    water: float = Field(default=180.0)
-    superplasticizer: float = Field(default=0.0)
-    coarse_agg: float = Field(default=1000.0)
-    fine_agg: float = Field(default=800.0)
-    age_days: float = Field(default=28.0)
 
-#%%
+# ---------------------------------------------------------
+# 3. Tabela de Custos REAIS (R$ por kg) - Mercado Brasileiro
+# ---------------------------------------------------------
+CUSTOS_KG = {
+    "cement": 0.85,             # ~ R$ 42,50 o saco de 50kg
+    "slag": 0.25,               # Escória
+    "fly_ash": 0.20,            # Cinza volante
+    "water": 0.02,              # Custo de água tratada na usina
+    "superplasticizer": 12.00,  # Aditivos são caros por kg
+    "coarse_agg": 0.08,         # Brita (~ R$ 80 a tonelada)
+    "fine_agg": 0.07            # Areia (~ R$ 70 a tonelada)
+}
+
+# ---------------------------------------------------------
+# ESQUEMAS DE VALIDAÇÃO
+# ---------------------------------------------------------
+class MixConcreto(BaseModel):
+    cement: float = Field(default=350.0, ge=100, le=500, description="Cimento (kg/m³)")
+    slag: float = Field(default=0.0, ge=0, le=200, description="Escória (kg/m³)")
+    fly_ash: float = Field(default=0.0, ge=0, le=200, description="Cinza Volante (kg/m³)")
+    water: float = Field(default=180.0, ge=100, le=250, description="Água (kg/m³)")
+    superplasticizer: float = Field(default=0.0, ge=0, le=30, description="Superplastificante (kg/m³)")
+    coarse_agg: float = Field(default=1000.0, ge=800, le=1200, description="Agregado Graúdo/Brita (kg/m³)")
+    fine_agg: float = Field(default=800.0, ge=600, le=1000, description="Agregado Miúdo/Areia (kg/m³)")
+    age_days: float = Field(default=28.0, ge=1, le=365, description="Idade de Cura (Dias)")
+
+# ---------------------------------------------------------
+# ROTAS DA API
+# ---------------------------------------------------------
+
 @app.get("/", tags=["Health Check"])
 def home():
-    return {"status": "Online", "mensagem": "API a funcionar! 🚀"}
+    return {"status": "Online", "mensagem": "A API Concreto Inteligente está a funcionar na perfeição! 🚀"}
 
-#%%
-@app.post("/simular_traco", tags=["1. Validador"])
+@app.post("/simular_traco", tags=["1. Validador de Traço (Engenharia)"])
 def simular_traco(mix: MixConcreto):
     if modelo is None:
-        raise HTTPException(status_code=500, detail="Modelo XGBoost não carregado.")
+        raise HTTPException(status_code=500, detail="Modelo XGBoost não carregado no servidor.")
 
     dados = mix.model_dump()
     dados["water_cement_ratio"] = dados["water"] / dados["cement"]
     
     df_pred = pd.DataFrame([dados])
-    colunas_modelo = ["cement", "slag", "fly_ash", "water", "superplasticizer", "coarse_agg", "fine_agg", "age_days", "water_cement_ratio"]
+    colunas_modelo = ["cement", "slag", "fly_ash", "water", "superplasticizer", 
+                      "coarse_agg", "fine_agg", "age_days", "water_cement_ratio"]
     df_pred = df_pred[colunas_modelo]
     
     resistencia_estimada = float(modelo.predict(df_pred)[0])
@@ -79,34 +93,37 @@ def simular_traco(mix: MixConcreto):
         }
     }
 
-#%%
-@app.get("/otimizar_custo", tags=["2. Otimizador"])
+@app.get("/otimizar_custo", tags=["2. Otimizador de Custo (Financeiro)"])
 def otimizar_custo(resistencia_alvo_mpa: float = 30.0, num_opcoes: int = 1):
     if modelo is None:
         raise HTTPException(status_code=500, detail="Modelo XGBoost não carregado.")
 
     simulacoes = []
-    for _ in range(5000):
+    
+    # Simulação Monte Carlo Aumentada e Blindada
+    for _ in range(15000):
         mix = {
-            "cement": float(np.random.uniform(100, 500)),
-            "slag": float(np.random.uniform(0, 200)),
-            "fly_ash": float(np.random.uniform(0, 200)),
-            "water": float(np.random.uniform(120, 220)),
-            "superplasticizer": float(np.random.uniform(0, 15)),
-            "coarse_agg": float(np.random.uniform(850, 1150)),
-            "fine_agg": float(np.random.uniform(650, 950)),
-            "age_days": 28.0
+            "cement": float(np.random.uniform(280, 500)), # NUNCA menos de 280kg para estrutura!
+            "slag": float(np.random.uniform(0, 150)),
+            "fly_ash": float(np.random.uniform(0, 150)),
+            "water": float(np.random.uniform(140, 220)), 
+            "superplasticizer": float(np.random.uniform(0, 10)),
+            "coarse_agg": float(np.random.uniform(900, 1150)),
+            "fine_agg": float(np.random.uniform(700, 950)),
+            "age_days": 28.0 
         }
-        mix["water_cement_ratio"] = mix["water"] / mix["cement"]
         
+        mix["water_cement_ratio"] = mix["water"] / mix["cement"]
         proporcao_agregados = mix["coarse_agg"] / mix["fine_agg"]
-        if 1.0 <= proporcao_agregados <= 2.0: 
+        
+        # LEI DE ABRAMS: Fator A/C tem de estar entre 0.35 e 0.65
+        if 1.0 <= proporcao_agregados <= 2.0 and 0.35 <= mix["water_cement_ratio"] <= 0.65: 
             custo = sum(mix[k] * CUSTOS_KG[k] for k in ["cement", "slag", "fly_ash", "water", "superplasticizer", "coarse_agg", "fine_agg"])
             mix["custo_reais"] = custo
             simulacoes.append(mix)
 
     if not simulacoes:
-        return {"erro": "Falha na simulação."}
+        return {"erro": "A simulação não conseguiu gerar traços fisicamente viáveis. Tente novamente."}
 
     df_sim = pd.DataFrame(simulacoes)
     colunas_modelo = ["cement", "slag", "fly_ash", "water", "superplasticizer", "coarse_agg", "fine_agg", "age_days", "water_cement_ratio"]
@@ -115,7 +132,7 @@ def otimizar_custo(resistencia_alvo_mpa: float = 30.0, num_opcoes: int = 1):
     df_viavel = df_sim[df_sim["resistencia_estimada_mpa"] >= resistencia_alvo_mpa].copy()
     
     if df_viavel.empty:
-        return {"erro": "Não encontramos traços."}
+        return {"erro": f"Não encontrámos traços viáveis para atingir {resistencia_alvo_mpa} MPa com os limites atuais de segurança."}
     
     df_viavel = df_viavel.sort_values(by="custo_reais", ascending=True)
     melhores = df_viavel.head(num_opcoes).to_dict(orient="records")
@@ -126,10 +143,10 @@ def otimizar_custo(resistencia_alvo_mpa: float = 30.0, num_opcoes: int = 1):
             
     return {"opcoes_mais_baratas": melhores}
 
-#%%
-@app.get("/dados_graficos", tags=["3. Dashboard"])
+@app.get("/dados_graficos", tags=["3. Dados para Gráficos (Dashboard)"])
 def dados_graficos():
     try:
+        # Removida a estratégia "Caçador" (caminhos do Windows) que causava erros
         if not os.path.exists(CAMINHO_CSV):
             return {"erro": "Arquivo CSV não encontrado na nuvem."}
             
@@ -154,30 +171,32 @@ def dados_graficos():
             "importancia": {"valores": importancias, "nomes": nomes_features}
         }
     except Exception as e:
-        return {"erro": str(e)}
+        return {"erro": f"Erro interno ao ler os dados: {e}"}
 
-#%%
-@app.get("/amostra_dados", tags=["4. Tabela"])
+@app.get("/amostra_dados", tags=["4. Dados Brutos"])
 def amostra_dados():
     try:
         if os.path.exists(CAMINHO_CSV):
             df = pd.read_csv(CAMINHO_CSV)
+            
+            # Tabela de custos atualizada para a tabela também bater com os preços reais
             df['custo_reais'] = (
                 df['cement'] * CUSTOS_KG['cement'] + df['slag'] * CUSTOS_KG['slag'] +
                 df['fly_ash'] * CUSTOS_KG['fly_ash'] + df['water'] * CUSTOS_KG['water'] +
                 df['superplasticizer'] * CUSTOS_KG['superplasticizer'] +
                 df['coarse_agg'] * CUSTOS_KG['coarse_agg'] + df['fine_agg'] * CUSTOS_KG['fine_agg']
             )
+            
             amostra = df.sample(10).round(2).to_dict(orient="records")
             return {"amostra": amostra}
         return {"erro": "Arquivo não encontrado na nuvem."}
     except Exception as e:
         return {"erro": str(e)}
-#%%
-@app.get("/download_csv")
+
+@app.get("/download_csv", tags=["4. Dados Brutos"])
 def download_csv():
     if os.path.exists(CAMINHO_CSV):
         return FileResponse(path=CAMINHO_CSV, filename="Super_Dataset_Concreto.csv", media_type="text/csv")
-    raise HTTPException(status_code=404, detail="Arquivo não encontrado.")
-
+    raise HTTPException(status_code=404, detail="Arquivo CSV não encontrado.")
+    
 #%%
