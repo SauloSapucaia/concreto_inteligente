@@ -100,13 +100,34 @@
                     <h4 class="mb-3 fw-bold text-primary">🔍 Simulador de Traço</h4>
                     <form id="formSimulador">
                         <div class="row g-2">
-                            <div class="col-6"><label class="small fw-semibold">Cimento (100-500 kg)</label><input type="number" id="cem" class="form-control" value="350" required></div>
-                            <div class="col-6"><label class="small fw-semibold">Água (100-250 kg)</label><input type="number" id="wat" class="form-control" value="180" required></div>
-                            <div class="col-6"><label class="small fw-semibold">Brita (800-1200 kg)</label><input type="number" id="coa" class="form-control" value="1050" required></div>
-                            <div class="col-6"><label class="small fw-semibold">Areia (600-1000 kg)</label><input type="number" id="fin" class="form-control" value="800" required></div>
-                            <div class="col-4"><label class="small fw-semibold">Escória (kg)</label><input type="number" id="sla" class="form-control" value="0"></div>
-                            <div class="col-4"><label class="small fw-semibold">Cinza Vol. (kg)</label><input type="number" id="fly" class="form-control" value="0"></div>
-                            <div class="col-4"><label class="small fw-semibold">Aditivo (kg)</label><input type="number" id="sup" class="form-control" value="0"></div>
+                            <div class="col-6">
+                                <label class="small fw-semibold text-dark">Cimento (280-500 kg)</label>
+                                <input type="number" id="cem" class="form-control" value="350" min="280" max="500" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="small fw-semibold text-dark">Água (140-220 kg)</label>
+                                <input type="number" id="wat" class="form-control" value="180" min="140" max="220" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="small fw-semibold text-dark">Brita (900-1150 kg)</label>
+                                <input type="number" id="coa" class="form-control" value="1050" min="900" max="1150" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="small fw-semibold text-dark">Areia (700-950 kg)</label>
+                                <input type="number" id="fin" class="form-control" value="800" min="700" max="950" required>
+                            </div>
+                            <div class="col-4">
+                                <label class="small fw-semibold text-dark">Escória (0-150 kg)</label>
+                                <input type="number" id="sla" class="form-control" value="0" min="0" max="150">
+                            </div>
+                            <div class="col-4">
+                                <label class="small fw-semibold text-dark">Cinza (0-150 kg)</label>
+                                <input type="number" id="fly" class="form-control" value="0" min="0" max="150">
+                            </div>
+                            <div class="col-4">
+                                <label class="small fw-semibold text-dark">Aditivo (0-10 kg)</label>
+                                <input type="number" id="sup" class="form-control" value="0" min="0" max="10">
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-simular w-100 mt-4 py-2">Calcular Resistência Estimada</button>
                     </form>
