@@ -6,6 +6,7 @@
     <title>Concreto Inteligente | Storytelling de IA</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,26 +61,26 @@
                     <div class="accordion-item border-0 rounded-3 overflow-hidden">
                         <h2 class="accordion-header" id="headingOne">
                             <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="background-color: #f8fafc; color: #334155; border-left: 4px solid #3b82f6;">
-                                🤔 Não é da área de Engenharia? Clique aqui para o Dicionário Básico do Concreto
+                                Não é da área de Engenharia? Clique aqui para o Dicionário Básico do Concreto
                             </button>
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionGlossario">
                             <div class="accordion-body bg-white text-muted small border border-top-0 border-light rounded-bottom">
                                 <div class="row g-3">
                                     <div class="col-md-4">
-                                        <strong class="text-dark">💪 MPa (Megapascal):</strong> É a medida da força. Um concreto de 30 MPa aguenta o peso de cerca de 300 kg em cada centímetro quadrado antes de quebrar. Casas comuns usam ~20 MPa, enquanto arranha-céus passam dos 40 MPa.
+                                        <strong class="text-dark">MPa (Megapascal):</strong> É a medida da força. Um concreto de 30 MPa aguenta o peso de cerca de 300 kg em cada centímetro quadrado antes de quebrar. Casas comuns usam ~20 MPa, enquanto arranha-céus passam dos 40 MPa.
                                     </div>
                                     <div class="col-md-4">
-                                        <strong class="text-dark">♻️ Escória e Cinza:</strong> São pós que sobram de indústrias (siderúrgicas e termelétricas). A engenharia moderna usa-os para substituir parte do cimento. Isso deixa o concreto mais barato e muito mais ecológico.
+                                        <strong class="text-dark">Escória e Cinza:</strong> São pós que sobram de indústrias (siderúrgicas e termelétricas). A engenharia moderna usa-os para substituir parte do cimento. Isso deixa o concreto mais barato e muito mais ecológico.
                                     </div>
                                     <div class="col-md-4">
-                                        <strong class="text-dark">🧪 Aditivo (Superplastificante):</strong> É um produto químico mágico. Ele deixa o concreto "mole" e fácil de espalhar na obra sem precisarmos adicionar água (já que água a mais estraga a receita).
+                                        <strong class="text-dark">Aditivo (Superplastificante):</strong> É um produto químico mágico. Ele deixa o concreto "mole" e fácil de espalhar na obra sem precisarmos adicionar água (já que água a mais estraga a receita).
                                     </div>
                                     <div class="col-md-6 mt-3">
-                                        <strong class="text-dark">⚖️ Fator A/C (Água/Cimento):</strong> É a regra de ouro da construção. Se colocar muita água, o cimento fica diluído e seca cheio de micro-buracos (ficando fraco). Quanto menor este fator, mais forte é o concreto.
+                                        <strong class="text-dark">Fator A/C (Água/Cimento):</strong> É a regra de ouro da construção. Se colocar muita água, o cimento fica diluído e seca cheio de micro-buracos (ficando fraco). Quanto menor este fator, mais forte é o concreto.
                                     </div>
                                     <div class="col-md-6 mt-3">
-                                        <strong class="text-dark">⏳ Idade (Dias):</strong> O concreto não "seca", ele endurece através de uma reação química com a água que leva dias. O padrão mundial de segurança é testar a força final da estrutura exatamente no seu 28º dia.
+                                        <strong class="text-dark">Idade (Dias):</strong> O concreto não "seca", ele endurece através de uma reação química com a água que leva dias. O padrão mundial de segurança é testar a força final da estrutura exatamente no seu 28º dia.
                                     </div>
                                 </div>
                             </div>
@@ -97,7 +98,7 @@
             
             <div class="col-md-6 mb-4">
                 <div class="card card-custom p-4 h-100 border-top border-4 border-primary">
-                    <h4 class="mb-3 fw-bold text-primary">🔍 Simulador de Traço</h4>
+                    <h4 class="mb-3 fw-bold text-primary">Simulador de Traço de Concreto</h4>
                     <form id="formSimulador">
                         <div class="row g-2">
                             <div class="col-6">
@@ -130,20 +131,25 @@
                             </div>
                         </div>
                         <button type="submit" class="btn btn-simular w-100 mt-4 py-2">Calcular Resistência Estimada</button>
+
                     </form>
-                    <div id="resultadoSimulador" class="result-box d-none mt-4 p-3 bg-light rounded">
-                        <div class="d-flex justify-content-around text-center align-items-center">
-                            <div><span class="d-block small text-muted text-uppercase fw-semibold">Fator A/C</span><span class="fs-4 fw-bold text-primary" id="resAC">--</span></div>
-                            <div><span class="d-block small text-muted text-uppercase fw-semibold">Resistência</span><span class="fs-3 fw-bold text-dark" id="resMpa">-- MPa</span></div>
-                            <div><span class="d-block small text-muted text-uppercase fw-semibold">Custo</span><span class="fs-4 fw-bold text-success" id="resCusto">R$ --</span></div>
+                    <div id="resultadoSimulador" class="result-box d-none mt-4 p-3 bg-light rounded text-center">
+                        <div class="row align-items-center">
+                            <div class="col-4"><span class="small text-muted d-block">Fator A/C</span><span class="fs-4 fw-bold text-primary" id="resAC">--</span></div>
+                            <div class="col-4"><span class="small text-muted d-block">Resistência</span><span class="fs-3 fw-bold text-dark" id="resMpa">-- MPa</span></div>
+                            <div class="col-4"><span class="small text-muted d-block">Custo</span><span class="fs-5 fw-bold text-success" id="resCusto">R$ --</span></div>
                         </div>
+                    </div>
+                    <div class="mt-4 p-3 rounded" style="background-color: #f0f7ff; border: 1px dashed #3b82f6;">
+                        <h6 class="fw-bold text-primary mb-2"><i class="bi bi-info-circle"></i> A Regra de Ouro: Lei de Abrams</h6>
+                        <p class="small text-muted mb-0">Quanto maior o <strong>Fator A/C</strong> (mais água), mais poroso e fraco o concreto se torna. Nossa IA "pune" traços muito diluídos!</p>
                     </div>
                 </div>
             </div>
             
             <div class="col-md-6 mb-4">
                 <div class="card card-custom p-4 h-100 border-top border-4 border-success">
-                    <h4 class="mb-3 fw-bold text-success">💰 Otimizador Financeiro</h4>
+                    <h4 class="mb-3 fw-bold text-success">Otimizador de Custos de Produção</h4>
                     <p class="small text-muted mb-3">Encontra o menor custo comercial possível que garanta a resistência exigida pelo projeto.</p>
                     <form id="formOtimizador">
                         <div class="mb-3">
@@ -171,7 +177,7 @@
 
                             <h4 class="fw-bold text-primary mb-4">Cálculo Numérico com XGBoost</h4>
                             <div class="alert border-primary border-opacity-25 mb-4" style="background-color: #f0fdfa; border-left: 4px solid #0d9488;">
-                                <h6 class="fw-bold text-teal-800 mb-2" style="color: #0f766e;">🧠 A IA em Português Claro</h6>
+                                <h6 class="fw-bold text-teal-800 mb-2" style="color: #0f766e;">A IA em Português Claro</h6>
                                 <p class="mb-0 small text-dark">Imagine que o XGBoost é um comitê com 500 engenheiros especialistas (que na fórmula são chamados de <b>Árvores</b> ou <b>$K$</b>). O 1º especialista dá um palpite inicial de resistência. O 2º olha <i>apenas</i> para o erro do primeiro e tenta corrigir. O 3º corrige o erro do segundo, e assim por diante. No final, a IA simplesmente soma a opinião de todos eles para chegar ao traço perfeito!</p>
                             </div>
 
@@ -224,7 +230,7 @@
                                 <div class="accordion-item border-0 rounded-3 overflow-hidden">
                                     <h2 class="accordion-header" id="headingGeek">
                                         <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGeek" aria-expanded="false" aria-controls="collapseGeek" style="background-color: #f1f5f9; color: #0f172a; border-left: 4px solid #475569;">
-                                            📝 Modo Cientista de Dados: Métricas de Avaliação e Pipeline
+                                            Modo Cientista de Dados: Métricas de Avaliação e Pipeline
                                         </button>
                                     </h2>
                                     <div id="collapseGeek" class="accordion-collapse collapse" aria-labelledby="headingGeek" data-bs-parent="#accordionGeek">
@@ -258,7 +264,7 @@
                                                 </div>
                                             </div>
                                             <div class="bg-light p-3 rounded border border-light mt-3 mb-3">
-                                                <span class="fw-bold text-dark d-block mb-2">📏 O que significam essas siglas?</span>
+                                                <span class="fw-bold text-dark d-block mb-2">O que significam essas siglas?</span>
                                                 <ul class="mb-0 ps-3">
                                                     <li><strong class="text-dark">R² (Coeficiente de Determinação):</strong> É a "nota da prova" da IA (vai de 0 a 1). Um R² de 0.939 significa que a IA conseguiu aprender e explicar quase 94% de toda a lógica complexa por trás do endurecimento do concreto.</li>
                                                     <li class="mb-1"><strong class="text-dark">MAE (Erro Absoluto Médio):</strong> É o erro no "mundo real". Um MAE de 2.67 significa que, em média, a IA erra a previsão por apenas 2.67 MPa (para mais ou para menos). É uma margem de segurança excelente para a Engenharia.</li>
@@ -266,7 +272,7 @@
                                                 </ul>
                                             </div>
                                             <div class="bg-light p-3 rounded border border-light">
-                                                <span class="fw-bold text-dark d-block mb-2">⚙️ Tuning e Validação do Modelo Vencedor:</span>
+                                                <span class="fw-bold text-dark d-block mb-2">Tuning e Validação do Modelo Vencedor:</span>
                                                 <ul class="mb-0 ps-3">
                                                     <li class="mb-1"><strong>Hiperparâmetros (RandomizedSearch):</strong> <code>{'subsample': 0.8, 'n_estimators': 500, 'max_depth': 3, 'learning_rate': 0.2, 'colsample_bytree': 0.8}</code></li>
                                                     <li><strong>Validação Cruzada (K-Fold = 5):</strong> Média de R² no K-Fold: <strong>0.9397 (+/- 0.0128)</strong>. O desvio padrão minúsculo comprova que o modelo não memorizou os dados (sem <i>overfitting</i>) e consegue generalizar com excelência para traços inéditos.</li>
@@ -301,7 +307,7 @@
                 <h2 class="section-title">3. O Dataset e Análise Estatística</h2>
                 <div class="card bg-white border-0 shadow-sm mb-4" style="border-left: 4px solid #8b5cf6 !important;">
                     <div class="card-body">
-                        <h5 class="fw-bold mb-2" style="color: #4c1d95;">📚 A Origem dos Dados (Ensaios de Laboratório)</h5>
+                        <h5 class="fw-bold mb-2" style="color: #4c1d95;">A Origem dos Dados (Ensaios de Laboratório)</h5>
                         <p class="text-muted mb-0">Para que a Inteligência Artificial consiga prever a resistência com precisão, o modelo foi treinado com mais de <strong>1.000 ensaios reais de compressão de corpos de prova</strong>. Utilizámos a prestigiada base de dados de betão da <em>UCI Machine Learning Repository</em>, combinada com ensaios contemporâneos focados em misturas sustentáveis (com adição de escória e cinza volante). O algoritmo mapeou e aprendeu a correlação química de 8 materiais diferentes, desde o 1º até ao 365º dia de cura.</p>
                     </div>
                 </div>
@@ -311,7 +317,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <p class="text-muted m-0">Abaixo, uma amostra das 10 primeiras linhas do nosso banco de dados unificado de laboratório. <b>Clique nos títulos para ordenar.</b></p>
                     <a href="https://api-concreto.onrender.com/download_csv" class="btn btn-outline-primary fw-bold" target="_blank" download>
-                        📥 Baixar CSV Completo
+                        Baixar CSV Completo
                     </a>
                 </div>
                 
