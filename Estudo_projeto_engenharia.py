@@ -156,7 +156,19 @@ def plotar_eda(df):
 def treinar_modelos(df):
     print("\n[3/5] Iniciando o processamento, divisão e treinamento dos modelos...")
     
-    X = df.drop("compressive_strength_mpa", axis=1)
+    if 'water_cement_ratio' not in df.columns:
+        df['water_cement_ratio'] = df['water'] / df['cement']
+    
+    features_blindadas = [
+        'cement', 
+        'slag', 
+        'fly_ash', 
+        'water_cement_ratio', 
+        'superplasticizer', 
+        'age_days'
+    ]
+    
+    X = df[features_blindadas]
     y = df["compressive_strength_mpa"]
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -216,15 +228,17 @@ def treinar_modelos(df):
         print(f"      RMSE : {rmse:.4f} MPa")
         print(f"      MAE  : {mae:.4f} MPa\n")
 
-    print("      -> Gerando Inteligência Explicável (SHAP Values)...")
+    print("      -> Gerando Inteligência Explicável (SHAP Values) para o Dashboard...")
     explainer = shap.TreeExplainer(xgb_otimizado)
     shap_values = explainer.shap_values(X_test)
     
     plt.figure(figsize=(10, 6))
-    plt.title("Como o XGBoost toma decisões (SHAP Summary Plot)")
-    shap.summary_plot(shap_values, X_test, show=False)
+    shap.summary_plot(shap_values, X_test, plot_type="dot", show=False)
+    plt.title("Impacto das Variáveis na Resistência do Concreto (Análise SHAP)", fontsize=14, pad=20)
     plt.tight_layout()
-    plt.show()
+    nome_imagem = "shap_summary.png"
+    plt.savefig(nome_imagem, dpi=300, bbox_inches='tight')
+    plt.close()
 
     print("-" * 60)
     return xgb_otimizado, X.columns
@@ -260,12 +274,21 @@ def otimizacao_genetica(modelo_xgb):
     }
 
     def avaliar(individual):
-        keys = ["cement","slag","fly_ash","water","superplasticizer","coarse_agg","fine_agg","age_days"]
-        mix = dict(zip(keys, individual))
+        mix = {
+            "cement": individual[0],
+            "slag": individual[1],
+            "fly_ash": individual[2],
+            "water": individual[3],
+            "superplasticizer": individual[4],
+            "coarse_agg": individual[5],
+            "fine_agg": individual[6],
+            "age_days": 28 
+        }
         mix["water_cement_ratio"] = mix["water"] / mix["cement"]
-        
         df_temp = pd.DataFrame([mix])
-        resistencia = modelo_xgb.predict(df_temp)[0]
+        colunas_modelo = [ "cement", "slag", "fly_ash", "water_cement_ratio", "superplasticizer", "age_days" ]
+        df_modelo = df_temp[colunas_modelo]
+        resistencia = modelo_xgb.predict(df_modelo)[0]
         custo = sum(mix[k] * custos[k] for k in custos.keys())
         return custo, resistencia
 
@@ -322,6 +345,21 @@ def otimizacao_genetica(modelo_xgb):
     plt.grid(True, linestyle="--", alpha=0.6)
     plt.xlim(left=max(0, min(custos_p) - 10)) 
     plt.show()
+
+def explicar_modelo(modelo_xgb, X_train):
+    print("\n[+] Gerando análise de explicabilidade SHAP...")
+    
+    # Explica as decisões da IA usando a Teoria dos Jogos
+    explainer = shap.TreeExplainer(modelo_xgb)
+    shap_values = explainer.shap_values(X_train)
+    
+    # Gera o gráfico
+    plt.figure(figsize=(10, 6))
+    plt.title("O que mais impacta a Resistência do Concreto?")
+    shap.summary_plot(shap_values, X_train, show=False)
+    plt.savefig("explicabilidade_shap.png", bbox_inches='tight')
+    plt.show()
+    print("✅ Gráfico salvo como 'explicabilidade_shap.png'")
 
 # %%
 # 5. EXECUÇÃO PRINCIPAL
