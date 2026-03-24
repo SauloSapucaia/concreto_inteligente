@@ -174,7 +174,6 @@
                 <div class="card card-custom p-4">
                     <div class="row">
                         <div class="col-md-7">
-
                             <h4 class="fw-bold text-primary mb-4">Cálculo Numérico com XGBoost</h4>
                             <div class="alert border-primary border-opacity-25 mb-4" style="background-color: #f0fdfa; border-left: 4px solid #0d9488;">
                                 <h6 class="fw-bold text-teal-800 mb-2" style="color: #0f766e;">A IA em Português Claro</h6>
@@ -216,7 +215,7 @@
                                 </ul>
                             </div>
                             
-                            <div class="theory-box mt-4">
+                            <div class="theory-box mt-4 mb-4">
                                 <h5 class="fw-bold">⚠️ Fatores Físicos e Limitações de Campo</h5>
                                 <p class="mb-0 text-sm">Este cálculo foca na proporção da massa ($kg/m^3$). Em campo, patologias podem surgir devido a fatores externos, tais como:</p>
                                 <ul class="mb-0 mt-2 small">
@@ -226,7 +225,7 @@
                                 </ul>
                             </div>
 
-                            <div class="accordion mt-4 shadow-sm" id="accordionGeek">
+                            <div class="accordion shadow-sm" id="accordionGeek">
                                 <div class="accordion-item border-0 rounded-3 overflow-hidden">
                                     <h2 class="accordion-header" id="headingGeek">
                                         <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGeek" aria-expanded="false" aria-controls="collapseGeek" style="background-color: #f1f5f9; color: #0f172a; border-left: 4px solid #475569;">
@@ -266,12 +265,12 @@
                                             <div class="bg-light p-3 rounded border border-light mt-3 mb-3">
                                                 <span class="fw-bold text-dark d-block mb-2">O que significam essas siglas?</span>
                                                 <ul class="mb-0 ps-3">
-                                                    <li><strong class="text-dark">R² (Coeficiente de Determinação):</strong> É a "nota da prova" da IA (vai de 0 a 1). Um R² de 0.939 significa que a IA conseguiu aprender e explicar quase 94% de toda a lógica complexa por trás do endurecimento do concreto.</li>
-                                                    <li class="mb-1"><strong class="text-dark">MAE (Erro Absoluto Médio):</strong> É o erro no "mundo real". Um MAE de 2.67 significa que, em média, a IA erra a previsão por apenas 2.67 MPa (para mais ou para menos). É uma margem de segurança excelente para a Engenharia.</li>
+                                                    <li><strong class="text-dark">R² (Coeficiente de Determinação):</strong> É a "nota da prova" da IA (vai de 0 a 1). Um R² de <strong>0.922</strong> significa que a IA conseguiu aprender e explicar quase 93% de toda a lógica complexa por trás do endurecimento do concreto.</li>
+                                                    <li class="mb-1"><strong class="text-dark">MAE (Erro Absoluto Médio):</strong> É o erro no "mundo real". Um MAE de <strong>3.01</strong> significa que, em média, a IA erra a previsão por apenas 3.01 MPa (para mais ou para menos). É uma margem de segurança excelente para a Engenharia.</li>
                                                     <li class="mb-1"><strong class="text-dark">RMSE (Raiz do Erro Quadrático Médio):</strong> É o "Detector de Desastres". O RMSE pune matematicamente erros gigantes. Se a IA errar por muito num único traço, o RMSE explode. Um RMSE baixo como o nosso prova que a IA é consistente e não tem "pontos cegos" perigosos.</li>
                                                 </ul>
                                             </div>
-                                            <div class="bg-light p-3 rounded border border-light">
+                                            <div class="bg-light p-3 rounded border border-light mt-3 mb-3">
                                                 <span class="fw-bold text-dark d-block mb-2">Tuning e Validação do Modelo Vencedor:</span>
                                                 <ul class="mb-0 ps-3">
                                                     <li class="mb-1"><strong>Hiperparâmetros (RandomizedSearch):</strong> <code>{'subsample': 0.8, 'n_estimators': 500, 'max_depth': 3, 'learning_rate': 0.2, 'colsample_bytree': 0.8}</code></li>
@@ -293,16 +292,31 @@
                                                     <span class="fw-bold text-dark d-block mb-2">Explicabilidade da IA (Análise SHAP)</span>
                                                     <p class="text-muted small mb-3">O gráfico abaixo comprova visualmente a assertividade da validação: a Inteligência Artificial compreendeu a física do problema e definiu o <strong>Fator A/C</strong> e a <strong>Idade de Cura</strong> como os reais motores da resistência, penalizando ou recompensando o MPa da mesma forma que um Engenheiro Civil faria.</p>
                                                     
-                                                    <img src="shap_summary.png" alt="Gráfico SHAP de Importância das Variáveis contra Multicolinearidade" class="img-fluid rounded border shadow-sm" style="max-height: 450px;">
+                                                    <img src="shap_summary.png" alt="Gráfico SHAP de Importância das Variáveis contra Multicolinearidade" class="img-fluid rounded border shadow-sm mb-4" style="max-height: 450px;">
+                                                </div>
+                                                <div class="bg-white p-3 rounded border text-start mx-auto shadow-sm mt-3" style="max-width: 800px; font-size: 0.9rem;">
+                                                    <span class="fw-bold text-dark d-block mb-3"><i class="bi bi-info-circle text-primary"></i> Como ler o Ranking de Importância (SHAP)?</span>
+                                                    <p class="text-muted mb-3">
+                                                        Este gráfico de barras revela o "peso" que a Inteligência Artificial dá a cada variável na hora de calcular a resistência. Quanto maior a barra, maior o impacto no cálculo final. O modelo surpreendeu ao ir além do senso comum:
+                                                    </p>
+                                                    <ul class="mb-0 ps-3 text-muted">
+                                                        <li class="mb-2">
+                                                            <strong class="text-dark">Top 1 - Idade de Cura (age_days):</strong> A IA descobriu que o tempo é o fator mais decisivo. Um traço perfeito ainda será frágil no 1º dia, mostrando que o modelo aprendeu a curva de endurecimento físico do material.
+                                                        </li>
+                                                        <li class="mb-2">
+                                                            <strong class="text-dark">Top 2 - Fator Água/Cimento (water_cement_ratio):</strong> A prova de que a nossa vacina contra a multicolinearidade funcionou! A IA compreendeu a Lei de Abrams: a proporção química exata entre água e ligante importa mais do que a quantidade bruta de materiais na mistura.
+                                                        </li>
+                                                        <li>
+                                                            <strong class="text-dark">A Força das Adições (slag e cement):</strong> De forma muito inteligente, o modelo colocou a Escória (um material sustentável) levemente acima do Cimento tradicional. Isso comprova que, na base de ensaios laboratoriais modernos, concretos de altíssima performance dependem fortemente de adições minerais reativas.
+                                                        </li>
+                                                    </ul>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="col-md-5">
+                            </div> <div class="col-md-5">
                             <div class="h-100 d-flex flex-column pt-4 pt-md-0">
                                 <h5 class="fw-bold text-center text-success mb-2">Peso das Variáveis no Cálculo</h5>
                                 <p class="small text-center text-muted mb-4">Baseado nas árvores, veja quais materiais têm maior impacto no resultado final.</p>
@@ -314,13 +328,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mb-5">
+                        </div> </div> </div> </div>
+        </div> <div class="row mb-5">
             <div class="col-12">
                 <h2 class="section-title">3. O Dataset e Análise Estatística</h2>
                 <div class="card bg-white border-0 shadow-sm mb-4" style="border-left: 4px solid #8b5cf6 !important;">
@@ -396,7 +405,6 @@
                 </div>
             </div>
         </div>
-    </div>
     
     <footer class="bg-gray-800 text-gray-400 text-center py-6">
         <p>&copy; 2026 Saulo Sapucaia. Todos os direitos reservados.</p>
