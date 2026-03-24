@@ -75,15 +75,22 @@ def simular_traco(mix: MixConcreto):
     if modelo is None:
         raise HTTPException(status_code=500, detail="Modelo XGBoost não carregado no servidor.")
 
-    dados = mix.model_dump()
+    dados = mix.dict() if hasattr(mix, 'dict') else mix.model_dump()
+    
+    if dados["cement"] <= 0:
+        raise HTTPException(status_code=400, detail="A quantidade de cimento deve ser maior que zero.")
+        
     dados["water_cement_ratio"] = dados["water"] / dados["cement"]
     
     df_pred = pd.DataFrame([dados])
-    colunas_modelo = ["cement", "slag", "fly_ash", "water", "superplasticizer", 
-                      "coarse_agg", "fine_agg", "age_days", "water_cement_ratio"]
+    
+    colunas_modelo = [
+        "cement", "slag", "fly_ash", "water_cement_ratio", "superplasticizer", "age_days"
+    ]
     df_pred = df_pred[colunas_modelo]
     
     resistencia_estimada = float(modelo.predict(df_pred)[0])
+    
     custo_total = sum(dados[k] * CUSTOS_KG.get(k, 0) for k in ["cement", "slag", "fly_ash", "water", "superplasticizer", "coarse_agg", "fine_agg"])
     
     return {
@@ -126,7 +133,8 @@ def otimizar_custo(resistencia_alvo_mpa: float = 30.0, num_opcoes: int = 1):
         return {"erro": "A simulação não conseguiu gerar traços fisicamente viáveis. Tente novamente."}
 
     df_sim = pd.DataFrame(simulacoes)
-    colunas_modelo = ["cement", "slag", "fly_ash", "water", "superplasticizer", "coarse_agg", "fine_agg", "age_days", "water_cement_ratio"]
+    
+    colunas_modelo = [ "cement", "slag", "fly_ash", "water_cement_ratio", "superplasticizer", "age_days" ]
     df_sim["resistencia_estimada_mpa"] = modelo.predict(df_sim[colunas_modelo])
     
     df_viavel = df_sim[df_sim["resistencia_estimada_mpa"] >= resistencia_alvo_mpa].copy()
@@ -160,7 +168,7 @@ def dados_graficos():
         
         if modelo is not None:
             importancias = [float(i) for i in modelo.feature_importances_]
-            nomes_features = ["Cimento", "Escória", "Cinza", "Água", "Aditivo", "Brita", "Areia", "Idade", "Fator A/C"]
+            nomes_features = ["Cimento", "Escória", "Cinza Volante", "Fator A/C", "Aditivo", "Idade"]
         else:
             importancias = []
             nomes_features = []
