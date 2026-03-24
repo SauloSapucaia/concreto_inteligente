@@ -241,25 +241,25 @@
                                                 <div class="col-md-4">
                                                     <div class="p-2 border rounded bg-light text-center h-100">
                                                         <span class="d-block fw-bold text-secondary mb-1">Baseline (Reg. Linear)</span>
-                                                        <div class="text-dark fw-semibold">R²: 0.5848</div>
-                                                        <div class="text-danger">MAE: 8.82 MPa</div>
-                                                        <div class="text-muted" style="font-size: 0.70rem;">RMSE: 11.12 MPa</div>
+                                                        <div class="text-dark fw-semibold">R²: 0.5518</div>
+                                                        <div class="text-danger">MAE: 9.04 MPa</div>
+                                                        <div class="text-muted" style="font-size: 0.70rem;">RMSE: 11.56 MPa</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="p-2 border rounded bg-light text-center h-100">
                                                         <span class="d-block fw-bold text-secondary mb-1">Random Forest</span>
-                                                        <div class="text-dark fw-semibold">R²: 0.9220</div>
-                                                        <div class="text-warning text-dark">MAE: 3.33 MPa</div>
-                                                        <div class="text-muted" style="font-size: 0.70rem;">RMSE: 4.82 MPa</div>
+                                                        <div class="text-dark fw-semibold">R²: 0.9150</div>
+                                                        <div class="text-warning text-dark">MAE: 3.53 MPa</div>
+                                                        <div class="text-muted" style="font-size: 0.70rem;">RMSE: 5.03 MPa</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="p-2 border border-success border-2 rounded bg-success bg-opacity-10 text-center h-100 shadow-sm">
                                                         <span class="d-block fw-bold text-success mb-1">🏆 XGBoost Otimizado</span>
-                                                        <div class="fw-bold text-dark">R²: 0.9399</div>
-                                                        <div class="fw-bold text-success">MAE: 2.67 MPa</div>
-                                                        <div class="text-muted" style="font-size: 0.70rem;">RMSE: 4.23 MPa</div>
+                                                        <div class="fw-bold text-dark">R²: 0.9229</div>
+                                                        <div class="fw-bold text-success">MAE: 3.01 MPa</div>
+                                                        <div class="text-muted" style="font-size: 0.70rem;">RMSE: 4.80 MPa</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -275,7 +275,7 @@
                                                 <span class="fw-bold text-dark d-block mb-2">Tuning e Validação do Modelo Vencedor:</span>
                                                 <ul class="mb-0 ps-3">
                                                     <li class="mb-1"><strong>Hiperparâmetros (RandomizedSearch):</strong> <code>{'subsample': 0.8, 'n_estimators': 500, 'max_depth': 3, 'learning_rate': 0.2, 'colsample_bytree': 0.8}</code></li>
-                                                    <li><strong>Validação Cruzada (K-Fold = 5):</strong> Média de R² no K-Fold: <strong>0.9397 (+/- 0.0128)</strong>. O desvio padrão minúsculo comprova que o modelo não memorizou os dados (sem <i>overfitting</i>) e consegue generalizar com excelência para traços inéditos.</li>
+                                                    <li><strong>Validação Cruzada (K-Fold = 5):</strong> Média de R² no K-Fold: <strong>0.9224 (+/- 0.0159)</strong>. O desvio padrão minúsculo comprova que o modelo não memorizou os dados (sem <i>overfitting</i>) e consegue generalizar com excelência para traços inéditos.</li>
                                                 </ul>
                                             </div>
                                             <div class="bg-light p-3 rounded border border-light mt-3 mb-3">
