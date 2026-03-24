@@ -230,7 +230,7 @@
                                 <div class="accordion-item border-0 rounded-3 overflow-hidden">
                                     <h2 class="accordion-header" id="headingGeek">
                                         <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGeek" aria-expanded="false" aria-controls="collapseGeek" style="background-color: #f1f5f9; color: #0f172a; border-left: 4px solid #475569;">
-                                            Modo Cientista de Dados: Métricas de Avaliação e Pipeline
+                                            Métricas de Avaliação e Pipeline: Clique para os Detalhes Técnicos do Modelo
                                         </button>
                                     </h2>
                                     <div id="collapseGeek" class="accordion-collapse collapse" aria-labelledby="headingGeek" data-bs-parent="#accordionGeek">
@@ -277,6 +277,24 @@
                                                     <li class="mb-1"><strong>Hiperparâmetros (RandomizedSearch):</strong> <code>{'subsample': 0.8, 'n_estimators': 500, 'max_depth': 3, 'learning_rate': 0.2, 'colsample_bytree': 0.8}</code></li>
                                                     <li><strong>Validação Cruzada (K-Fold = 5):</strong> Média de R² no K-Fold: <strong>0.9397 (+/- 0.0128)</strong>. O desvio padrão minúsculo comprova que o modelo não memorizou os dados (sem <i>overfitting</i>) e consegue generalizar com excelência para traços inéditos.</li>
                                                 </ul>
+                                            </div>
+                                            <div class="bg-light p-3 rounded border border-light mt-3 mb-3">
+                                                <span class="fw-bold text-dark d-block mb-2"><i class="bi bi-shield-check text-success"></i> Prevenção contra o "R² de Vaidade" e Multicolinearidade</span>
+                                                <p class="mb-2 text-dark">
+                                                    Na modelagem estatística, o <strong>"R² de vaidade"</strong> ocorre quando um modelo apresenta uma métrica de acerto artificialmente alta devido a variáveis redundantes (fenômeno conhecido como Multicolinearidade). No caso do concreto, como o volume final é constante ($1m^3$), variáveis como Água, Areia e Brita são matematicamente dependentes, o que pode "enganar" algoritmos preditivos.
+                                                </p>
+                                                <p class="mb-3 text-dark">
+                                                    Para blindar o sistema, foi aplicada uma rigorosa validação estatística (análise VIF - <i>Variance Inflation Factor</i>). Através de <i>Feature Engineering</i> avançada, isolamos o ruído dos agregados e convertemos a entrada primária na <strong>Relação Água/Cimento (Fator A/C)</strong>. Assim, o modelo não apenas "decora" volumes, mas de fato reproduz a química estrutural da mistura (Lei de Abrams).
+                                                </p>
+                                                
+                                                <hr class="text-muted opacity-25">
+
+                                                <div class="text-center mt-3">
+                                                    <span class="fw-bold text-dark d-block mb-2">Explicabilidade da IA (Análise SHAP)</span>
+                                                    <p class="text-muted small mb-3">O gráfico abaixo comprova visualmente a assertividade da validação: a Inteligência Artificial compreendeu a física do problema e definiu o <strong>Fator A/C</strong> e a <strong>Idade de Cura</strong> como os reais motores da resistência, penalizando ou recompensando o MPa da mesma forma que um Engenheiro Civil faria.</p>
+                                                    
+                                                    <img src="shap_summary.png" alt="Gráfico SHAP de Importância das Variáveis contra Multicolinearidade" class="img-fluid rounded border shadow-sm" style="max-height: 450px;">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
