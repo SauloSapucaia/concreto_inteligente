@@ -129,17 +129,53 @@
                                 <label class="small fw-semibold text-dark">Aditivo (0-10 kg)</label>
                                 <input type="number" id="sup" class="form-control" value="0" min="0" max="10">
                             </div>
-                        </div>
+                            <div class="col-12 mt-2">
+                                <label class="small fw-semibold text-dark">Idade de Cura (Dias)</label>
+                                <input type="number" id="age_days" class="form-control" value="28" min="1" max="365" required>
+                            </div>
+                            <div id="alerta-dica-ia" class="d-none alert alert-warning mt-3 text-start border-warning shadow-sm">
+                                <h6 class="fw-bold text-dark mb-1"><i class="bi bi-robot text-primary"></i> Assistente de Engenharia diz:</h6>
+                                <span id="texto-dica-ia" class="small text-dark"></span>
+                            </div>
+                            
+                            <div class="col-md-12 mb-2 mt-3 pt-3 border-top">
+                                <label class="form-label fw-bold text-primary"><i class="bi bi-bullseye"></i> Alvo do Projeto - Qual a resistência exigida pelo engenheiro? (MPa)</label>
+                                <input type="number" class="form-control border-primary" id="resistencia_alvo" value="30.0" step="0.5">
+                                <div class="form-text small">Usaremos Cálculo Integral para descobrir a probabilidade da sua receita não atingir esse alvo.</div>
+                            </div>
+                            </div>
                         <button type="submit" class="btn btn-simular w-100 mt-4 py-2">Calcular Resistência Estimada</button>
 
                     </form>
                     <div id="resultadoSimulador" class="result-box d-none mt-4 p-3 bg-light rounded text-center">
                         <div class="row align-items-center">
-                            <div class="col-4"><span class="small text-muted d-block">Fator A/C</span><span class="fs-4 fw-bold text-primary" id="resAC">--</span></div>
-                            <div class="col-4"><span class="small text-muted d-block">Resistência</span><span class="fs-3 fw-bold text-dark" id="resMpa">-- MPa</span></div>
-                            <div class="col-4"><span class="small text-muted d-block">Custo</span><span class="fs-5 fw-bold text-success" id="resCusto">R$ --</span></div>
+                            <div class="col-12 mb-3"><span class="small text-muted d-block">Fator A/C</span><span class="fs-4 fw-bold text-primary" id="resAC">--</span></div>
                         </div>
-                    </div>
+                        
+                        <div class="row g-2">
+                            <div class="col-md-4">
+                                <div class="p-2 border rounded bg-white text-center h-100 shadow-sm">
+                                    <span class="d-block fw-bold text-secondary mb-1 small">Previsão IA (Média)</span>
+                                    <div class="fs-4 fw-bold text-primary" id="resultado-mpa">--</div>
+                                    <span class="text-muted small">MPa</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-2 border rounded bg-white text-center h-100 shadow-sm">
+                                    <span class="d-block fw-bold text-secondary mb-1 small">Custo Estimado</span>
+                                    <div class="fs-4 fw-bold text-success" id="resultado-custo">--</div>
+                                    <span class="text-muted small">R$ / m³</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-2 border rounded bg-white text-center h-100 shadow-sm">
+                                    <span class="d-block fw-bold text-secondary mb-1 small">Risco (Integral)</span>
+                                    <div class="fs-4 fw-bold" id="resultado-risco" style="color: #0f172a;">-- %</div>
+                                    <div id="badge-risco" class="badge bg-secondary mt-1">Aguardando</div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
                     <div class="mt-4 p-3 rounded" style="background-color: #f0f7ff; border: 1px dashed #3b82f6;">
                         <h6 class="fw-bold text-primary mb-2"><i class="bi bi-info-circle"></i> A Regra de Ouro: Lei de Abrams</h6>
                         <p class="small text-muted mb-0">Quanto maior o <strong>Fator A/C</strong> (mais água), mais poroso e fraco o concreto se torna. Nossa IA "pune" traços muito diluídos!</p>
@@ -173,7 +209,7 @@
                 <h2 class="section-title">2. A Matemática do Modelo</h2>
                 <div class="card card-custom p-4">
                     <div class="row">
-                        <div class="col-md-7">
+                        <div class="col-12">
                             <h4 class="fw-bold text-primary mb-4">Cálculo Numérico com XGBoost</h4>
                             <div class="alert border-primary border-opacity-25 mb-4" style="background-color: #f0fdfa; border-left: 4px solid #0d9488;">
                                 <h6 class="fw-bold text-teal-800 mb-2" style="color: #0f766e;">A IA em Português Claro</h6>
@@ -201,6 +237,17 @@
                                 $$ \hat{y}_i = 25.00 + 8.20 - 4.50 + 1.30 = \mathbf{30.00 \text{ MPa}} $$
                             </div>
 
+                            <div class="mt-5 mb-5 p-4 border rounded shadow-sm bg-white">
+                                <h5 class="fw-bold text-center text-success mb-2">Peso das Variáveis no Cálculo</h5>
+                                <p class="small text-center text-muted mb-4">Baseado nas árvores, veja quais materiais têm maior impacto na hora de dar os palpites finais.</p>
+                                
+                                <div id="grafico-importancia" class="graph-container w-100" style="min-height: 450px;">
+                                    <div class="loading-box">
+                                        <div class="spinner-border text-success mb-3" role="status"></div>
+                                        <span class="small fw-semibold">A carregar IA do Servidor...</span>
+                                    </div>
+                                </div>
+                            </div>
                             <p>Para evitar que o algoritmo crie "receitas impossíveis" (Overfitting), ele minimiza uma função objetivo rigorosa composta por um termo de perda e um termo de regularização $(\Omega)$:</p>
                             
                             <div class="formula-box mb-3 text-center">
@@ -212,6 +259,33 @@
                                 <ul class="mb-0 mt-2 text-muted">
                                     <li class="mb-2"><strong class="text-dark">Erro Quadrático $(y_i - \hat{y}_i)^2$:</strong> É o "Detector de Desastres". Se a IA errar o cálculo por 1 MPa, a punição matemática é 1. Se errar por 10 MPa, o erro é elevado ao quadrado e a punição vira 100! Isso obriga o modelo a fugir de erros extremos.</li>
                                     <li><strong class="text-dark">Regularização $\Omega(f_k)$:</strong> É a "Taxa de Simplicidade". Ela pune a IA se ela tentar inventar regras matemáticas muito complexas. É o que garante que a receita vai funcionar na betoneira, e não apenas no computador.</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-light p-3 rounded border border-light mt-4 mb-3 shadow-sm">
+                                <span class="fw-bold text-dark d-block mb-2"><i class="bi bi-calculator text-primary"></i> Cálculo Integral e Análise de Risco Estrutural</span>
+                                <p class="mb-2 text-dark small">
+                                    Na engenharia real, a mistura do concreto sofre variabilidade natural. Não basta prever a média de resistência; precisamos garantir a segurança contra rupturas. Para calcular a probabilidade de o concreto não atingir o <strong>Alvo do Projeto</strong>, modelamos o erro do XGBoost (RMSE = 4.80) como a dispersão de uma <strong>Distribuição Normal</strong>.
+                                </p>
+                                <p class="mb-2 text-dark small">
+                                    O Risco de Ruína é exatamente a <strong>área sob a curva</strong> à esquerda do alvo exigido, calculada através da integral definida da Função Densidade de Probabilidade (PDF):
+                                </p>
+                                
+                                <div class="formula-box mb-3 mt-3 text-center">
+                                    $$ P(X < \text{Alvo}) = \int_{-\infty}^{\text{Alvo}} \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2} dx $$
+                                </div>
+                                
+                                <ul class="mb-0 ps-3 text-muted small">
+                                    <li class="mb-1"><strong class="text-dark">$\mu$ (Média):</strong> É a resistência estimada pela Inteligência Artificial.</li>
+                                    <li class="mb-1"><strong class="text-dark">$\sigma$ (Desvio Padrão):</strong> É a incerteza do modelo na Validação Cruzada (4.80 MPa).</li>
+                                    <li><strong class="text-dark">Limiar de 5%:</strong> A norma estrutural determina que a área dessa integral (o risco de quebra) não ultrapasse os 5%. O sistema resolve esta integral instantaneamente, sinalizando se o traço é seguro ou não.</li>
+                                    <li class="mb-1"><strong class="text-dark">$\mu$ (Média):</strong> É a resistência estimada pela Inteligência Artificial.</li>
+                                    <li class="mb-1"><strong class="text-dark">$\sigma$ (Desvio Padrão):</strong> É a incerteza do modelo na Validação Cruzada (4.80 MPa).</li>
+                                    <li><strong class="text-dark">Limiar de 5%:</strong> A norma estrutural determina que a área dessa integral (o risco de quebra) não ultrapasse os 5%. O sistema resolve esta integral instantaneamente, sinalizando se o traço é seguro ou não.</li>
+                                </ul>
+                                
+                                <div id="grafico-risco-integral" class="mt-4 border-top pt-3" style="height: 350px; width: 100%;"></div>
+                                <p class="text-center small text-muted mt-2 mb-0">↑ O gráfico acima reage em tempo real às suas simulações. Tente gerar um traço com Risco Elevado para ver a área de ruptura estrutural engolir a curva.</p>
                                 </ul>
                             </div>
                             
@@ -306,8 +380,11 @@
                                                         <li class="mb-2">
                                                             <strong class="text-dark">Top 2 - Fator Água/Cimento (water_cement_ratio):</strong> A prova de que a nossa vacina contra a multicolinearidade funcionou! A IA compreendeu a Lei de Abrams: a proporção química exata entre água e ligante importa mais do que a quantidade bruta de materiais na mistura.
                                                         </li>
-                                                        <li>
-                                                            <strong class="text-dark">A Força das Adições (slag e cement):</strong> De forma muito inteligente, o modelo colocou a Escória (um material sustentável) levemente acima do Cimento tradicional. Isso comprova que, na base de ensaios laboratoriais modernos, concretos de altíssima performance dependem fortemente de adições minerais reativas.
+                                                        <li class="mb-2">
+                                                            <strong class="text-dark">A Força das Adições (slag e cement):</strong> De forma muito inteligente, o modelo colocou a Escória (um material sustentável) levemente acima do Cimento tradicional. Isso comprova que, na base de ensaios laboratoriais modernos, concretos dependem de adições minerais reativas.
+                                                        </li>
+                                                        <li class="mt-3 p-2 bg-light border-start border-warning border-4 rounded">
+                                                            <strong class="text-dark"><i class="bi bi-cone-striped text-warning"></i> Onde estão a Areia e a Brita?</strong> Você deve ter notado que elas sumiram do ranking. Isso é proposital! Como um caminhão betoneira tem volume fixo ($1m^3$), a areia e a brita funcionam apenas como "agregados inertes" — elas servem para dar volume e preencher o espaço que sobra. A IA aprendeu a focar apenas na "pasta química ativa" (Cimento, Água, Aditivos) que é a verdadeira responsável por colar as pedras e dar força à estrutura.
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -316,20 +393,13 @@
                                     </div>
                                 </div>
                             </div>
-                            </div> <div class="col-md-5">
-                            <div class="h-100 d-flex flex-column pt-4 pt-md-0">
-                                <h5 class="fw-bold text-center text-success mb-2">Peso das Variáveis no Cálculo</h5>
-                                <p class="small text-center text-muted mb-4">Baseado nas árvores, veja quais materiais têm maior impacto no resultado final.</p>
-                                
-                                <div id="grafico-importancia" class="graph-container flex-grow-1" style="min-height: 600px;">
-                                    <div class="loading-box">
-                                        <div class="spinner-border text-success mb-3" role="status"></div>
-                                        <span class="small fw-semibold">A carregar IA do Servidor...</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> </div> </div> </div>
-        </div> <div class="row mb-5">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-5">
             <div class="col-12">
                 <h2 class="section-title">3. O Dataset e Análise Estatística</h2>
                 <div class="card bg-white border-0 shadow-sm mb-4" style="border-left: 4px solid #8b5cf6 !important;">
@@ -417,7 +487,91 @@
         window.colunaAtual = '';
         window.ordemCrescente = true;
 
-        // BOTÃO DO SIMULADOR (COM ANIMAÇÃO)
+        /* FUNÇÃO PARA DESENHAR A INTEGRAL (SINO DE GAUSS) DINAMICAMENTE */
+        function renderizarGraficoRisco(media, alvo, desvio = 4.80) {
+            const xValores = [];
+            const yValores = [];
+            const xArea = [];
+            const yArea = [];
+
+            // Define o tamanho do eixo X (4 desvios para a esquerda e para a direita)
+            const minX = media - 4 * desvio;
+            const maxX = media + 4 * desvio;
+            
+            // Calcula qual é a altura máxima (o pico) da curva
+            const maxPdf = (1 / (desvio * Math.sqrt(2 * Math.PI)));
+
+            // Calcula a curva e a área do risco
+            for (let i = minX; i <= maxX; i += 0.1) {
+                xValores.push(i);
+                const pdf = (1 / (desvio * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((i - media) / desvio, 2));
+                yValores.push(pdf);
+
+                // Se o ponto no eixo X for menor que o Alvo, ele entra na área colorida (o Risco)
+                if (i <= alvo) {
+                    xArea.push(i);
+                    yArea.push(pdf);
+                }
+            }
+
+            // Opcional: fechar a área para a pintura ficar perfeita até o chão
+            xArea.push(alvo, minX);
+            yArea.push(0, 0);
+
+            // Determina a cor com base no tamanho do risco
+            const integralColor = (media - alvo > desvio * 1.645) ? 'rgba(16, 185, 129, 0.5)' : 'rgba(239, 68, 68, 0.5)'; // Verde se <5%, Vermelho se >5%
+
+            // Traço 1: A Linha do Sino de Gauss
+            const traceCurva = {
+                x: xValores, y: yValores, type: 'scatter', mode: 'lines',
+                line: { color: '#3b82f6', width: 3 }, name: 'Distribuição Normal', hoverinfo: 'none'
+            };
+
+            // Traço 2: A Área Pintada da Integral (O Risco)
+            const traceArea = {
+                x: xArea, y: yArea, fill: 'toself', type: 'scatter', mode: 'none',
+                fillcolor: integralColor, name: 'Área de Risco', hoverinfo: 'none', showlegend: false
+            };
+
+            const layout = {
+                title: { 
+                    text: `<b>Simulação Atual:</b> Média ${media.toFixed(1)} MPa | Alvo ${alvo.toFixed(1)} MPa`, 
+                    font: { size: 16, color: '#0f172a' },
+                    y: 0.95 // Joga o título mais para cima
+                },
+                margin: { t: 80, l: 20, r: 20, b: 40 }, // Dá 80 pixels de espaço "em branco" no teto
+                xaxis: { title: 'Resistência (MPa)', showgrid: false, zeroline: false },
+                yaxis: { 
+                    showticklabels: false, 
+                    showgrid: false, 
+                    zeroline: false,
+                    // A MÁGICA ESTÁ AQUI: Força o teto do gráfico a ser 30% maior que o pico da curva
+                    range: [0, maxPdf * 1.30] 
+                },
+                showlegend: false, // Força o sumiço definitivo da caixa de legenda lateral
+                shapes: [
+                    // Linhas verticais indo do chão (0) até um pouco acima do pico da curva (maxPdf * 1.15)
+                    { type: 'line', x0: alvo, x1: alvo, y0: 0, y1: maxPdf * 1.15, line: { color: '#ef4444', width: 2, dash: 'dash' } }, 
+                    { type: 'line', x0: media, x1: media, y0: 0, y1: maxPdf * 1.15, line: { color: '#1e293b', width: 2, dash: 'dot' } }
+                ],
+                annotations: [
+                    // Textos posicionados exatamento no topo das linhas pontilhadas (sem encostar na curva azul)
+                    { x: alvo, y: maxPdf * 1.18, text: '<b>ALVO</b>', showarrow: false, yanchor: 'bottom', font: { color: '#ef4444', size: 12 } },
+                    { x: media, y: maxPdf * 1.18, text: '<b>MÉDIA IA</b>', showarrow: false, yanchor: 'bottom', font: { color: '#1e293b', size: 12 } }
+                ],
+                font: { family: 'Inter, sans-serif' },
+                plot_bgcolor: 'transparent',
+                paper_bgcolor: 'transparent'
+            };
+
+            Plotly.newPlot('grafico-risco-integral', [traceArea, traceCurva], layout, { 
+                displayModeBar: false, 
+                responsive: true,
+                staticPlot: true // Esta linha é a bala de prata! Ela transforma o gráfico numa "imagem" intocável.
+            });
+        }
+
+        // BOTÃO DO SIMULADOR (AGORA COM INTEGRAIS E PROBABILIDADE)
         document.getElementById('formSimulador').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.querySelector('.btn-simular');
@@ -425,22 +579,63 @@
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> Calculando...';
             btn.disabled = true;
 
+            const cement = parseFloat(document.getElementById('cem').value);
+            const water = parseFloat(document.getElementById('wat').value);
+            const alvoDesejado = parseFloat(document.getElementById('resistencia_alvo').value);
+
             const payload = {
-                cement: parseFloat(document.getElementById('cem').value), slag: parseFloat(document.getElementById('sla').value),
-                fly_ash: parseFloat(document.getElementById('fly').value), water: parseFloat(document.getElementById('wat').value),
-                superplasticizer: parseFloat(document.getElementById('sup').value), coarse_agg: parseFloat(document.getElementById('coa').value),
-                fine_agg: parseFloat(document.getElementById('fin').value), age_days: 28.0
+                cement: cement,
+                slag: parseFloat(document.getElementById('sla').value),
+                fly_ash: parseFloat(document.getElementById('fly').value),
+                water: water,
+                superplasticizer: parseFloat(document.getElementById('sup').value),
+                coarse_agg: parseFloat(document.getElementById('coa').value),
+                fine_agg: parseFloat(document.getElementById('fin').value),
+                age_days: parseFloat(document.getElementById('age_days').value),
+                resistencia_alvo_mpa: alvoDesejado
             };
+            
             try {
                 const response = await fetch(`${API_URL}/simular_traco`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 const data = await response.json();
                 if(response.ok) {
-                    // Calcula o Fator A/C na hora
-                    const fatorAC = (payload.water / payload.cement).toFixed(2);                    
+                    const fatorAC = (water / cement).toFixed(2);                    
                     document.getElementById('resAC').innerText = fatorAC;
-                    document.getElementById('resMpa').innerText = `${data.resultados.resistencia_esperada_mpa} MPa`;
-                    document.getElementById('resCusto').innerText = `R$ ${parseFloat(data.resultados.custo_estimado_reais_por_m3).toFixed(2)} / m³`;
+                    const previsto = data.resultados.resistencia_esperada_mpa;
+                    document.getElementById('resultado-mpa').innerText = `${previsto}`;
+                    document.getElementById('resultado-custo').innerText = `${parseFloat(data.resultados.custo_estimado_reais_por_m3).toFixed(2)}`;
+                    
+                    // Lógica do Risco de Probabilidade
+                    const risco = data.resultados.risco_falha_porcentagem;
+                    document.getElementById('resultado-risco').innerText = risco + " %";
+
+                    const badge = document.getElementById('badge-risco');
+                    const caixaDica = document.getElementById('alerta-dica-ia');
+                    const textoDica = document.getElementById('texto-dica-ia');
+
+                    if (risco <= 5.0) {
+                        badge.className = "badge bg-success mt-1";
+                        badge.innerText = "Aprovado por Norma (< 5%)";
+                        document.getElementById('resultado-risco').className = "fs-4 fw-bold text-success";
+                        caixaDica.classList.add('d-none');
+                    } else {
+                        badge.className = "badge bg-danger mt-1";
+                        badge.innerText = "Risco Elevado (> 5%)";
+                        document.getElementById('resultado-risco').className = "fs-4 fw-bold text-danger";
+                        
+                        let sugestao = `A sua receita tem uma média esperada de <b>${previsto} MPa</b>, o que é muito arriscado para um alvo de ${alvoDesejado} MPa. `;
+                        sugestao += `Para reduzir o risco de quebra, experimente <b>diminuir a quantidade de Água</b> ou <b>aumentar a quantidade de Cimento</b> para abaixar o seu Fator A/C. `;
+                        sugestao += `Você também pode aumentar a <b>Idade de Cura</b> caso tenha mais prazo na obra.`;
+                        
+                        textoDica.innerHTML = sugestao;
+                        caixaDica.classList.remove('d-none'); 
+                    }
+
                     document.getElementById('resultadoSimulador').classList.remove('d-none');
+                    
+                    // === ATUALIZA O GRÁFICO DE GAUSS DINAMICAMENTE AQUI ===
+                    renderizarGraficoRisco(previsto, alvoDesejado, 4.80);
+
                 } else { alert("Atenção: " + JSON.stringify(data.detail)); }
             } catch (error) { alert("Erro de conexão com o servidor. A API Python está a rodar?"); }
             
@@ -448,7 +643,7 @@
             btn.disabled = false;
         });
 
-        // BOTÃO DO OTIMIZADOR (COM ANIMAÇÃO)
+        // BOTÃO DO OTIMIZADOR
         document.getElementById('formOtimizador').addEventListener('submit', async (e) => {
             e.preventDefault();
             const alvo = document.getElementById('alvoMpa').value;
@@ -489,7 +684,7 @@
             btn.disabled = false;
         });
 
-        /* FUNÇÃO PARA RENDERIZAR A TABELA COM OS DADOS VINDOS DA API, INCLUINDO A LÓGICA DE ORDENAÇÃO QUANDO O USUÁRIO CLICAR NOS TÍTULOS DAS COLUNAS. */
+        /* FUNÇÃO PARA RENDERIZAR A TABELA */
         function renderizarTabela(dados) {
             let html = '';
             dados.forEach(row => {
@@ -524,20 +719,21 @@
             renderizarTabela(window.dadosOriginais);
         }
 
-        /* FUNÇÃO PRINCIPAL PARA CARREGAR OS DADOS DA TABELA E OS GRÁFICOS DE IMPORTÂNCIA, DISTRIBUIÇÃO E CORRELAÇÃO. */
+        /* FUNÇÃO PRINCIPAL */
         async function carregarDadosEGraficos() {
-            // Função para matar a bolinha e mostrar erro caso a nuvem esteja a dormir
             const mostrarErro = (id) => {
                 const el = document.getElementById(id);
                 if (el) el.innerHTML = '<div class="text-danger p-4 text-center mt-4 fw-bold">❌ O servidor está a despertar. Atualize a página num minuto.</div>';
             };
+
+            // DESENHA O GRÁFICO DE RISCO ILUSTRATIVO AO ABRIR O SITE PELA PRIMEIRA VEZ
+            renderizarGraficoRisco(35.0, 30.0, 4.80);
 
             // 1. CARREGA A TABELA
             try {
                 const resTabela = await fetch(`${API_URL}/amostra_dados`);
                 const dataTabela = await resTabela.json();
                 
-                // Só desenha se a resposta for 200 OK e tiver dados
                 if (resTabela.ok && dataTabela.amostra) {
                     window.dadosOriginais = dataTabela.amostra.map(row => {
                         if(!row.water_cement_ratio) row.water_cement_ratio = row.water / row.cement;
@@ -556,13 +752,12 @@
                 const response = await fetch(`${API_URL}/dados_graficos`);
                 const data = await response.json();
                 
-                // BLINDAGEM: Se a API mandar erro 500, falhar ou não mandar os dados, nós matamos o spinner na hora!
                 if (!response.ok || data.erro || data.detail || !data.importancia) {
                     console.error("API Error (Nuvem a dormir):", data);
                     mostrarErro('grafico-importancia');
                     mostrarErro('grafico-distribuicao');
                     mostrarErro('grafico-correlacao');
-                    return; // Para a execução aqui para não crashar a página
+                    return;
                 }
 
                 document.getElementById('grafico-importancia').innerHTML = '';
@@ -621,7 +816,6 @@
                 Plotly.newPlot('grafico-correlacao', [traceCorr], { margin: { t: 30, l: 80, r: 20, b: 60 }, font: layoutFont, xaxis: { tickangle: -45 } }, configPlotly);
 
             } catch (err) { 
-                // Se a rede cair completamente, cai aqui
                 console.error("Erro fatal nos gráficos:", err);
                 mostrarErro('grafico-importancia');
                 mostrarErro('grafico-distribuicao');
