@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 import joblib
 import pandas as pd
 import numpy as np
+from scipy.stats import norm
 
 # A MÁGICA PARA A NUVEM: O Python descobre sozinho a pasta onde ele está guardado!
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -61,6 +62,7 @@ class MixConcreto(BaseModel):
     coarse_agg: float = Field(default=1000.0, ge=800, le=1200, description="Agregado Graúdo/Brita (kg/m³)")
     fine_agg: float = Field(default=800.0, ge=600, le=1000, description="Agregado Miúdo/Areia (kg/m³)")
     age_days: float = Field(default=28.0, ge=1, le=365, description="Idade de Cura (Dias)")
+    resistencia_alvo_mpa: float = Field(default=30.0, ge=1, le=100, description="Resistência Exigida (Alvo em MPa)")
 
 # ---------------------------------------------------------
 # ROTAS DA API
@@ -90,9 +92,14 @@ def simular_traco(mix: MixConcreto):
     df_pred = df_pred[colunas_modelo]
     
     resistencia_estimada = float(modelo.predict(df_pred)[0])
-    
     custo_total = sum(dados[k] * CUSTOS_KG.get(k, 0) for k in ["cement", "slag", "fly_ash", "water", "superplasticizer", "coarse_agg", "fine_agg"])
-    
+
+    RMSE_MODELO = 4.80 
+
+    # A função norm.cdf calcula a integral de -infinito até o Alvo
+    probabilidade_falha = norm.cdf(dados["resistencia_alvo_mpa"], loc=resistencia_estimada, scale=RMSE_MODELO)
+    risco_percentual = probabilidade_falha * 100
+
     return {
         "resultados": {
             "resistencia_esperada_mpa": round(resistencia_estimada, 2),
